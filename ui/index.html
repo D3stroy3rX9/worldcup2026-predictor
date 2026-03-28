@@ -304,6 +304,8 @@
       border-radius: var(--radius);
       overflow: hidden;
       transition: transform .2s, box-shadow .2s, border-color .2s;
+      display: flex;
+      flex-direction: column;
     }
 
     .group-card:hover {
@@ -336,7 +338,15 @@
       color: var(--black);
     }
 
-    .group-teams { padding:4px 0; }
+    .group-teams { padding:4px 0; flex:1; }
+
+    /* Accent bar — always flush at the very bottom */
+    .accent-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--green), var(--blue), var(--red), var(--orange));
+      flex-shrink: 0;
+      margin-top: auto;
+    }
 
     .team-row {
       display: flex;
@@ -719,11 +729,188 @@
     .sim-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
     .sim-gd  { font-size:11px; color:var(--gray); width:32px; text-align:right; }
 
-    /* Colour accent bar at bottom of cards */
-    .accent-bar {
-      height:3px;
-      background:linear-gradient(90deg, var(--green), var(--blue), var(--red), var(--orange));
+    /* ── TEAM MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      animation: fadeIn .2s ease;
     }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 480px;
+      overflow: hidden;
+      animation: slideUp .25s ease;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .modal-flag {
+      width: 64px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: var(--black);
+      line-height: 1;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      color: rgba(0,0,0,0.6);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: rgba(0,0,0,0.25);
+      border: none;
+      color: var(--black);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.4); }
+
+    .modal-body { padding: 20px 24px; }
+
+    .modal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modal-stat {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .modal-stat-label {
+      font-size: 9px;
+      color: var(--gray);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .modal-stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      color: var(--orange);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    .modal-stat-value.small { font-size: 16px; color: var(--white); font-family: 'Inter', sans-serif; font-weight: 700; }
+
+    .elo-bar-wrap {
+      height: 6px;
+      background: var(--bg2);
+      border-radius: 4px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .elo-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--orange-dark), var(--orange));
+      transition: width .8s ease;
+    }
+
+    .modal-form-title {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .form-badges {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .form-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .form-badge.W { background: rgba(0,154,68,.2); color: var(--green); border: 1px solid rgba(0,154,68,.4); }
+    .form-badge.D { background: rgba(170,136,85,.2); color: var(--gray); border: 1px solid rgba(170,136,85,.4); }
+    .form-badge.L { background: rgba(239,51,64,.2); color: var(--red); border: 1px solid rgba(239,51,64,.4); }
+
+    .form-badge small { font-size: 8px; font-weight: 600; letter-spacing: .5px; margin-top: 1px; }
+
+    .predict-from-modal {
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      border: none;
+      border-radius: 8px;
+      color: var(--black);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      font-weight: 900;
+      transition: all .2s;
+    }
+    .predict-from-modal:hover { opacity: .9; transform: translateY(-1px); }
 
     /* ── FOOTER ── */
     footer {
@@ -889,6 +1076,44 @@
   </section>
 </div>
 
+<!-- TEAM MODAL -->
+<div class="modal-overlay" id="teamModal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('teamModal').classList.remove('open')">✕</button>
+    <div class="modal-header">
+      <img class="modal-flag" id="modalFlag" src="" alt=""/>
+      <div>
+        <div class="modal-title" id="modalName">—</div>
+        <div class="modal-subtitle" id="modalGroup">—</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-stats">
+        <div class="modal-stat">
+          <div class="modal-stat-label">ELO Rating</div>
+          <div class="modal-stat-value" id="modalElo">—</div>
+          <div class="elo-bar-wrap"><div class="elo-bar" id="modalEloBar" style="width:0%"></div></div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">FIFA Ranking</div>
+          <div class="modal-stat-value" id="modalRank">—</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Confederation</div>
+          <div class="modal-stat-value small" id="modalConf">—</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-label">Tournament ELO Tier</div>
+          <div class="modal-stat-value small" id="modalTier">—</div>
+        </div>
+      </div>
+      <div class="modal-form-title">Recent Form (Simulated)</div>
+      <div class="form-badges" id="modalForm"></div>
+      <button class="predict-from-modal" id="modalPredictBtn">⚡ PREDICT WITH THIS TEAM</button>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <img class="ft-logo" src="wc2026-logo.png" alt="WC 2026"/>
@@ -897,6 +1122,64 @@
 
 <script>
 const FLAG = c => c ? `https://flagcdn.com/w40/${c}.png` : '';
+
+// FIFA rankings & extra info per team
+const TEAM_INFO = {
+  "Argentina":    { rank:1,  tier:"Elite",   pts:1867 },
+  "France":       { rank:2,  tier:"Elite",   pts:1859 },
+  "Spain":        { rank:3,  tier:"Elite",   pts:1853 },
+  "England":      { rank:4,  tier:"Elite",   pts:1813 },
+  "Brazil":       { rank:5,  tier:"Elite",   pts:1775 },
+  "Belgium":      { rank:6,  tier:"Elite",   pts:1738 },
+  "Netherlands":  { rank:7,  tier:"Elite",   pts:1731 },
+  "Portugal":     { rank:8,  tier:"Elite",   pts:1727 },
+  "Germany":      { rank:9,  tier:"Elite",   pts:1708 },
+  "Croatia":      { rank:11, tier:"Strong",  pts:1680 },
+  "Colombia":     { rank:12, tier:"Strong",  pts:1671 },
+  "Morocco":      { rank:13, tier:"Strong",  pts:1662 },
+  "Uruguay":      { rank:14, tier:"Strong",  pts:1658 },
+  "USA":          { rank:15, tier:"Strong",  pts:1645 },
+  "Mexico":       { rank:16, tier:"Strong",  pts:1632 },
+  "Switzerland":  { rank:17, tier:"Strong",  pts:1623 },
+  "Japan":        { rank:18, tier:"Strong",  pts:1620 },
+  "Senegal":      { rank:19, tier:"Strong",  pts:1598 },
+  "Iran":         { rank:20, tier:"Strong",  pts:1580 },
+  "South Korea":  { rank:21, tier:"Strong",  pts:1575 },
+  "Austria":      { rank:22, tier:"Strong",  pts:1569 },
+  "Australia":    { rank:23, tier:"Mid",     pts:1560 },
+  "Ecuador":      { rank:27, tier:"Mid",     pts:1540 },
+  "Algeria":      { rank:29, tier:"Mid",     pts:1532 },
+  "Egypt":        { rank:30, tier:"Mid",     pts:1528 },
+  "Canada":       { rank:33, tier:"Mid",     pts:1510 },
+  "Norway":       { rank:34, tier:"Mid",     pts:1505 },
+  "Tunisia":      { rank:35, tier:"Mid",     pts:1498 },
+  "Scotland":     { rank:36, tier:"Mid",     pts:1492 },
+  "Paraguay":     { rank:38, tier:"Mid",     pts:1482 },
+  "Ivory Coast":  { rank:39, tier:"Mid",     pts:1478 },
+  "Ghana":        { rank:45, tier:"Mid",     pts:1445 },
+  "Panama":       { rank:46, tier:"Mid",     pts:1438 },
+  "Saudi Arabia": { rank:48, tier:"Mid",     pts:1428 },
+  "Qatar":        { rank:52, tier:"Lower",   pts:1405 },
+  "South Africa": { rank:54, tier:"Lower",   pts:1392 },
+  "Uzbekistan":   { rank:58, tier:"Lower",   pts:1365 },
+  "Jordan":       { rank:64, tier:"Lower",   pts:1325 },
+  "Cape Verde":   { rank:79, tier:"Lower",   pts:1225 },
+  "New Zealand":  { rank:80, tier:"Lower",   pts:1218 },
+  "Haiti":        { rank:81, tier:"Lower",   pts:1205 },
+  "Curacao":      { rank:83, tier:"Lower",   pts:1180 },
+  "Italy":        { rank:10, tier:"Elite",   pts:1686 },
+  "Bosnia & Herz.":{ rank:66, tier:"Lower",  pts:1312 },
+  "Sweden":       { rank:32, tier:"Mid",     pts:1515 },
+  "Poland":       { rank:25, tier:"Mid",     pts:1549 },
+  "Kosovo":       { rank:82, tier:"Lower",   pts:1198 },
+  "Türkiye":      { rank:26, tier:"Mid",     pts:1545 },
+  "Czechia":      { rank:37, tier:"Mid",     pts:1488 },
+  "Denmark":      { rank:28, tier:"Mid",     pts:1536 },
+  "DR Congo":     { rank:62, tier:"Lower",   pts:1338 },
+  "Jamaica":      { rank:56, tier:"Lower",   pts:1378 },
+  "Iraq":         { rank:57, tier:"Lower",   pts:1372 },
+  "Suriname":     { rank:84, tier:"Lower",   pts:1165 },
+};
 
 const GROUPS = {
   A: [
@@ -987,16 +1270,25 @@ function poissonP(lambda, k) {
   return p;
 }
 
-function expectedGoals(eloA, eloB) {
+function expectedGoals(eloA, eloB, addVariance=false) {
   const diff = eloA - eloB;
+  // Higher sensitivity (800 vs old 1400) → bigger spread for big ELO gaps
+  let lA = 1.25 * Math.exp(diff / 800);
+  let lB = 1.25 * Math.exp(-diff / 800);
+  // Add per-match random variance so predictions aren't identical every click
+  if (addVariance) {
+    lA *= 0.80 + Math.random() * 0.40;  // ±20%
+    lB *= 0.80 + Math.random() * 0.40;
+  }
   return {
-    lambdaA: Math.max(0.3, Math.min(4.5, 1.35*Math.exp(diff/1400))),
-    lambdaB: Math.max(0.2, Math.min(3.5, 1.35*Math.exp(-diff/1400))),
+    lambdaA: Math.max(0.25, Math.min(5.0, lA)),
+    lambdaB: Math.max(0.20, Math.min(4.0, lB)),
   };
 }
 
 function topScorelines(eloA, eloB, n=6) {
-  const {lambdaA,lambdaB} = expectedGoals(eloA,eloB);
+  // Pass addVariance=true so each click gives different scorelines
+  const {lambdaA,lambdaB} = expectedGoals(eloA,eloB,true);
   const scores=[];
   for(let g=0;g<=6;g++) for(let h=0;h<=6;h++)
     scores.push({s:`${g}-${h}`, p:poissonP(lambdaA,g)*poissonP(lambdaB,h)});
@@ -1031,7 +1323,7 @@ function renderGroups() {
           </div>
         </div>`;
       return `
-        <div class="team-row" onclick="quickPredict('${t.name}')">
+        <div class="team-row" onclick="openTeamModal('${t.name}','${letter}')">
           <img class="flag-img" src="${FLAG(t.flag)}" alt="${t.name}" onerror="this.style.opacity='.2'"/>
           <div class="team-info">
             <div class="team-name">${t.name}</div>
@@ -1140,9 +1432,71 @@ function predictMatch() {
 }
 
 function quickPredict(name) {
+  closeModal();
   showSection('predictor',document.querySelectorAll('nav button')[1]);
   document.getElementById('homeTeam').value=name;
   setTimeout(()=>predictMatch(),100);
+}
+
+// ── TEAM MODAL ──
+function openTeamModal(name, group) {
+  const team = getTeam(name);
+  if (!team) return;
+  const info = TEAM_INFO[name] || { rank:'N/A', tier:'Unknown', pts: team.elo };
+
+  document.getElementById('modalFlag').src = FLAG(team.flag);
+  document.getElementById('modalFlag').alt = name;
+  document.getElementById('modalName').textContent = name;
+  document.getElementById('modalGroup').textContent = `Group ${group} · ${team.conf}`;
+  document.getElementById('modalElo').textContent = team.elo;
+  document.getElementById('modalRank').textContent = info.rank === 'N/A' ? '—' : `#${info.rank}`;
+  document.getElementById('modalConf').textContent = team.conf;
+  document.getElementById('modalTier').textContent = info.tier;
+
+  // ELO bar: 1000 = 0%, 2200 = 100%
+  const pct = Math.min(100, Math.max(0, ((team.elo - 1000) / 1200) * 100));
+  setTimeout(()=>{ document.getElementById('modalEloBar').style.width = pct + '%'; }, 80);
+
+  // Simulated recent form based on ELO
+  const form = simulateForm(team.elo);
+  document.getElementById('modalForm').innerHTML = form.map(f => {
+    const score = f.result==='W' ? `${f.gf}-${f.ga}` : f.result==='D' ? `${f.gf}-${f.ga}` : `${f.gf}-${f.ga}`;
+    return `<div class="form-badge ${f.result}">${f.result}<small>${score}</small></div>`;
+  }).join('');
+
+  // Wire up predict button
+  document.getElementById('modalPredictBtn').onclick = () => quickPredict(name);
+
+  document.getElementById('teamModal').classList.add('open');
+}
+
+function simulateForm(elo) {
+  // Generate 5 plausible recent results based on ELO strength
+  const results = [];
+  const winRate = Math.min(0.75, Math.max(0.25, (elo - 1400) / 1200 + 0.45));
+  for (let i = 0; i < 5; i++) {
+    const r = Math.random();
+    let result, gf, ga;
+    if (r < winRate) {
+      result = 'W';
+      gf = 1 + Math.floor(Math.random() * 3);
+      ga = Math.random() < 0.4 ? 0 : Math.floor(Math.random() * gf);
+    } else if (r < winRate + 0.22) {
+      result = 'D';
+      gf = ga = Math.floor(Math.random() * 3);
+    } else {
+      result = 'L';
+      ga = 1 + Math.floor(Math.random() * 3);
+      gf = Math.random() < 0.4 ? 0 : Math.floor(Math.random() * ga);
+    }
+    results.push({ result, gf, ga });
+  }
+  return results;
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('teamModal'))
+    document.getElementById('teamModal').classList.remove('open');
 }
 
 // ── SIMULATOR ──
