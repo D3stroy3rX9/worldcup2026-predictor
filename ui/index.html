@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FIFA World Cup 2026 — Prediction Model</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+    /* ── WC 2026 Official Colour Palette ── */
     :root {
-      --bg:     #06060f;
-      --bg2:    #0e0e22;
-      --bg3:    #16163a;
-      --card:   #111128;
-      --border: #1e1e42;
-      --red:    #e8173a;
-      --red2:   #ff3357;
-      --gold:   #f5c518;
-      --gold2:  #ffd84d;
-      --blue:   #1a3aff;
-      --blue2:  #4d6fff;
-      --white:  #ffffff;
-      --gray:   #8888aa;
-      --green:  #00d68f;
+      --orange:      #F47B20;
+      --orange-dark: #C05800;
+      --orange-deep: #7A3200;
+      --green:       #009A44;
+      --blue:        #0057A8;
+      --red:         #EF3340;
+      --black:       #0A0A0A;
+      --white:       #FFFFFF;
+      --gold:        #F5C518;
+      --gold2:       #FFD84D;
+      /* Dark tinted backgrounds */
+      --bg:    #0D0700;
+      --bg2:   #180E02;
+      --bg3:   #221503;
+      --card:  #1C1102;
+      --border:#3A2208;
+      --gray:  #AA8855;
+      --gray2: #887744;
       --radius: 12px;
     }
 
@@ -37,8 +42,8 @@
 
     /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #06060f 0%, #0e0e22 60%, #12001a 100%);
-      border-bottom: 2px solid var(--red);
+      background: linear-gradient(135deg, #0D0700 0%, #1C0C00 50%, #2A1000 100%);
+      border-bottom: 3px solid var(--orange);
       padding: 0 28px;
       position: sticky;
       top: 0;
@@ -47,34 +52,27 @@
       align-items: center;
       justify-content: space-between;
       height: 70px;
-      box-shadow: 0 4px 40px rgba(232,23,58,0.25);
+      box-shadow: 0 4px 40px rgba(244,123,32,0.35);
     }
 
     .logo-area {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* WC 2026 Logo */
-    .wc-logo {
-      position: relative;
-      width: 52px;
-      height: 52px;
-      flex-shrink: 0;
-    }
-
-    .wc-logo svg {
-      width: 52px;
-      height: 52px;
-      filter: drop-shadow(0 0 10px rgba(232,23,58,0.6));
+    .header-logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(244,123,32,0.7));
     }
 
     .logo-text h1 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 24px;
       letter-spacing: 3px;
-      background: linear-gradient(90deg, #fff 30%, var(--gold));
+      background: linear-gradient(90deg, var(--white) 20%, var(--orange));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
@@ -106,98 +104,171 @@
     }
 
     nav button:hover, nav button.active {
-      background: var(--red);
-      border-color: var(--red);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(232,23,58,0.4);
+      background: var(--orange);
+      border-color: var(--orange);
+      color: var(--black);
+      box-shadow: 0 0 20px rgba(244,123,32,0.5);
+      font-weight: 800;
     }
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(160deg, #0d0d24 0%, #06060f 55%, #1a0012 100%);
-      padding: 52px 24px 38px;
-      text-align: center;
       position: relative;
+      overflow: hidden;
+      padding: 0;
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Official WC 2026 diagonal stripe background */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--orange);
       overflow: hidden;
     }
 
-    .hero::before {
-      content: '26';
+    .hero-stripe {
       position: absolute;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 380px;
-      color: rgba(255,255,255,0.025);
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      pointer-events: none;
-      letter-spacing: 20px;
+      height: 100%;
+      transform: skewX(-12deg);
+      opacity: 0.9;
     }
 
-    .hero-wc-logo {
-      margin: 0 auto 20px;
-      width: 100px;
-      height: 100px;
-      position: relative;
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0,0,0,0.15) 40%,
+        rgba(0,0,0,0.4) 100%
+      );
       z-index: 1;
     }
 
-    .hero-wc-logo svg {
-      width: 100px;
-      height: 100px;
-      filter: drop-shadow(0 0 30px rgba(232,23,58,0.5))
-              drop-shadow(0 0 60px rgba(245,197,24,0.2));
+    .stripes-left {
+      position: absolute;
+      left: -20px;
+      top: 0;
+      height: 100%;
+      display: flex;
+      gap: 0;
+      z-index: 0;
     }
+
+    .stripes-right {
+      position: absolute;
+      right: -20px;
+      top: 0;
+      height: 100%;
+      display: flex;
+      gap: 0;
+      z-index: 0;
+    }
+
+    .s {
+      height: 100%;
+      transform: skewX(-12deg);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 40px 40px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-logo-wrap {
+      flex-shrink: 0;
+    }
+
+    .hero-logo {
+      width: 210px;
+      height: 210px;
+      object-fit: contain;
+      display: block;
+      mix-blend-mode: multiply;
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.35));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .hero-text { flex: 1; }
 
     .hero-tag {
       display: inline-block;
-      background: linear-gradient(90deg, var(--red), #8b0020);
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.3);
       padding: 5px 16px;
       border-radius: 20px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-bottom: 18px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 16px;
+      color: var(--white);
+      backdrop-filter: blur(4px);
     }
 
     .hero h2 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(40px,7vw,80px);
-      letter-spacing: 5px;
-      background: linear-gradient(135deg, #fff 30%, var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: clamp(36px, 6vw, 68px);
+      letter-spacing: 4px;
+      color: var(--white);
       line-height: 1;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 10px;
+      text-shadow: 2px 4px 20px rgba(0,0,0,0.5);
     }
 
+    .hero h2 span { color: var(--black); }
+
     .hero p {
-      color: var(--gray);
+      color: rgba(255,255,255,0.85);
       font-size: 14px;
-      max-width: 500px;
-      margin: 0 auto 30px;
+      max-width: 440px;
       line-height: 1.6;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 28px;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
     }
 
     .hero-stats {
       display: flex;
-      justify-content: center;
-      gap: 40px;
+      gap: 28px;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
     }
 
-    .stat-num  { font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--gold); line-height:1; }
-    .stat-label{ font-size:10px; color:var(--gray); letter-spacing:2px; text-transform:uppercase; }
+    .stat {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 10px 18px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
 
-    /* ── LAYOUT ── */
+    .stat-num   { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--white); line-height:1; }
+    .stat-label { font-size:9px; color:rgba(255,255,255,0.7); letter-spacing:2px; text-transform:uppercase; }
+
+    @media (max-width:768px) {
+      .hero-content { flex-direction:column; gap:24px; padding:32px 20px; }
+      .hero-logo { width:140px; height:140px; }
+    }
+
+    /* ── MAIN ── */
     .container { max-width:1440px; margin:0 auto; padding:36px 20px; }
     .section { display:none; }
     .section.active { display:block; }
@@ -210,12 +281,14 @@
       display:flex;
       align-items:center;
       gap:14px;
+      color: var(--orange);
     }
+
     .section-title::after {
       content:'';
       flex:1;
-      height:1px;
-      background:linear-gradient(90deg,var(--red),transparent);
+      height:2px;
+      background: linear-gradient(90deg, var(--orange), transparent);
     }
 
     /* ── GROUP CARDS ── */
@@ -235,12 +308,12 @@
 
     .group-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(232,23,58,0.18);
-      border-color: rgba(232,23,58,0.5);
+      box-shadow: 0 12px 40px rgba(244,123,32,0.2);
+      border-color: rgba(244,123,32,0.5);
     }
 
     .group-header {
-      background: linear-gradient(135deg, var(--red) 0%, #8b0020 100%);
+      background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
       padding: 11px 18px;
       display: flex;
       align-items: center;
@@ -251,19 +324,20 @@
       font-family:'Bebas Neue',sans-serif;
       font-size:30px;
       letter-spacing:2px;
+      color: var(--black);
     }
 
     .group-label {
       font-size:10px;
       font-weight:700;
       letter-spacing:2px;
-      opacity:.65;
+      opacity:.7;
       text-transform:uppercase;
+      color: var(--black);
     }
 
     .group-teams { padding:4px 0; }
 
-    /* Regular team row */
     .team-row {
       display: flex;
       align-items: center;
@@ -271,28 +345,19 @@
       gap: 12px;
       cursor: pointer;
       transition: background .15s;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
 
     .team-row:last-child { border-bottom:none; }
-    .team-row:hover { background:rgba(232,23,58,0.08); }
+    .team-row:hover { background:rgba(244,123,32,0.10); }
 
     .flag-img {
-      width: 32px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 3px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
-      flex-shrink: 0;
-    }
-
-    .flag-placeholder {
-      width: 32px;
-      height: 22px;
-      background: var(--bg3);
-      border-radius: 3px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
+      width:32px;
+      height:22px;
+      object-fit:cover;
+      border-radius:3px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.5);
+      flex-shrink:0;
     }
 
     .team-info { flex:1; min-width:0; }
@@ -306,112 +371,103 @@
       text-overflow:ellipsis;
     }
 
-    .team-conf {
-      font-size:10px;
-      color:var(--gray);
-      letter-spacing:.5px;
-    }
+    .team-conf { font-size:10px; color:var(--gray); letter-spacing:.5px; }
 
     .team-elo {
       font-family:'Bebas Neue',sans-serif;
       font-size:20px;
-      color:var(--gold);
+      color:var(--orange);
       letter-spacing:1px;
       flex-shrink:0;
     }
 
-    /* Playoff row — spans full width showing both finalists */
+    /* Playoff rows */
     .playoff-row {
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      background: rgba(245,197,24,0.04);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      background:rgba(244,123,32,0.06);
     }
 
     .playoff-row:last-child { border-bottom:none; }
 
     .playoff-header-row {
-      display: flex;
-      align-items: center;
-      padding: 8px 16px 4px;
-      gap: 8px;
+      display:flex;
+      align-items:center;
+      padding:8px 16px 4px;
+      gap:8px;
     }
 
     .playoff-badge {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: rgba(245,197,24,0.15);
-      border: 1px solid rgba(245,197,24,0.35);
-      color: var(--gold);
-      flex-shrink: 0;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      padding:2px 7px;
+      border-radius:4px;
+      background:rgba(244,123,32,0.2);
+      border:1px solid rgba(244,123,32,0.4);
+      color:var(--orange);
+      flex-shrink:0;
     }
 
-    .playoff-label {
-      font-size: 11px;
-      color: var(--gray);
-      font-weight: 600;
-      letter-spacing: .5px;
-    }
+    .playoff-label { font-size:11px; color:var(--gray); font-weight:600; }
 
     .playoff-date {
-      margin-left: auto;
-      font-size: 9px;
-      color: var(--red2);
-      font-weight: 700;
-      letter-spacing: .5px;
+      margin-left:auto;
+      font-size:9px;
+      color:var(--green);
+      font-weight:700;
+      letter-spacing:.5px;
     }
 
     .playoff-teams-row {
-      display: flex;
-      align-items: center;
-      padding: 6px 16px 10px;
-      gap: 10px;
+      display:flex;
+      align-items:center;
+      padding:6px 16px 10px;
+      gap:10px;
     }
 
     .playoff-team {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex: 1;
-      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      flex:1;
+      min-width:0;
     }
 
     .playoff-team-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--white);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size:12px;
+      font-weight:600;
+      color:var(--white);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .vs-mini {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 14px;
-      color: var(--red);
-      flex-shrink: 0;
-      padding: 0 2px;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:14px;
+      color:var(--orange);
+      flex-shrink:0;
+      padding:0 2px;
     }
 
     /* ── PREDICTOR ── */
     .predictor-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width:768px) {
       .predictor-layout { grid-template-columns:1fr; }
       nav button { padding:6px 10px; font-size:10px; }
     }
 
     .predictor-panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:24px;
     }
 
     .predictor-panel h3 {
@@ -419,30 +475,30 @@
       font-size:22px;
       letter-spacing:2px;
       margin-bottom:20px;
-      color:var(--gold);
+      color:var(--orange);
     }
 
     .team-select-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
     }
 
     .vs-badge {
       font-family:'Bebas Neue',sans-serif;
       font-size:24px;
-      color:var(--red);
+      color:var(--orange);
       flex-shrink:0;
     }
 
     select {
       flex:1;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 10px 12px;
-      border-radius: 8px;
+      background:var(--bg3);
+      border:1px solid var(--border);
+      color:var(--white);
+      padding:10px 12px;
+      border-radius:8px;
       font-size:13px;
       font-family:'Inter',sans-serif;
       cursor:pointer;
@@ -451,36 +507,37 @@
       transition:border-color .2s;
     }
 
-    select:focus { border-color:var(--red); }
+    select:focus { border-color:var(--orange); }
 
     .predict-btn {
       width:100%;
       padding:14px;
-      background: linear-gradient(135deg, var(--red), #8b0020);
+      background:linear-gradient(135deg, var(--orange), var(--orange-dark));
       border:none;
       border-radius:8px;
-      color:#fff;
+      color:var(--black);
       font-family:'Bebas Neue',sans-serif;
       font-size:20px;
       letter-spacing:3px;
       cursor:pointer;
+      font-weight:900;
       transition:all .2s;
-      box-shadow:0 4px 20px rgba(232,23,58,0.3);
+      box-shadow:0 4px 20px rgba(244,123,32,0.4);
     }
 
     .predict-btn:hover {
       transform:translateY(-2px);
-      box-shadow:0 8px 30px rgba(232,23,58,0.5);
+      box-shadow:0 8px 30px rgba(244,123,32,0.6);
     }
 
     /* Result */
     .result-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-top: 20px;
-      display: none;
+      background:var(--bg3);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      margin-top:20px;
+      display:none;
     }
 
     .result-card.show { display:block; animation:fadeIn .3s ease; }
@@ -500,27 +557,22 @@
     .result-team { text-align:center; flex:1; }
 
     .result-flag-img {
-      width: 60px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 5px;
-      margin: 0 auto 8px;
-      display: block;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.6);
+      width:60px;
+      height:40px;
+      object-fit:cover;
+      border-radius:5px;
+      margin:0 auto 8px;
+      display:block;
+      box-shadow:0 2px 12px rgba(0,0,0,0.6);
     }
 
-    .result-team-name { font-size:14px; font-weight:700; color:var(--white); }
-    .result-elo { font-size:11px; color:var(--gray); margin-top:3px; }
-    .result-vs  { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--red); padding:0 16px; }
+    .result-team-name { font-size:14px; font-weight:700; }
+    .result-elo       { font-size:11px; color:var(--gray); margin-top:3px; }
+    .result-vs        { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--orange); padding:0 16px; }
 
     .prob-bars { margin-bottom:16px; }
 
-    .prob-row {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
+    .prob-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
 
     .prob-label {
       width:76px;
@@ -552,18 +604,18 @@
       justify-content:flex-end;
     }
 
-    .prob-bar.home { background:linear-gradient(90deg,var(--blue),var(--blue2)); }
+    .prob-bar.home { background:linear-gradient(90deg,var(--blue),#4488dd); }
     .prob-bar.draw { background:linear-gradient(90deg,#444,#777); }
-    .prob-bar.away { background:linear-gradient(90deg,var(--red),var(--red2)); }
+    .prob-bar.away { background:linear-gradient(90deg,var(--orange-dark),var(--orange)); }
 
     .winner-badge {
       text-align:center;
       padding:11px;
-      background:linear-gradient(135deg,rgba(245,197,24,.12),rgba(245,197,24,.04));
-      border:1px solid rgba(245,197,24,.3);
+      background:linear-gradient(135deg,rgba(244,123,32,.12),rgba(244,123,32,.04));
+      border:1px solid rgba(244,123,32,.35);
       border-radius:8px;
       font-weight:700;
-      color:var(--gold);
+      color:var(--orange);
       font-size:14px;
     }
 
@@ -583,41 +635,32 @@
       text-align:center;
     }
 
-    .score-chip .score { font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--white); }
+    .score-chip .score { font-family:'Bebas Neue',sans-serif; font-size:24px; }
     .score-chip .prob  { font-size:11px; color:var(--gray); }
-
-    .score-chip.top {
-      border-color:var(--gold);
-      background:rgba(245,197,24,.07);
-    }
-    .score-chip.top .score { color:var(--gold); }
+    .score-chip.top    { border-color:var(--orange); background:rgba(244,123,32,.08); }
+    .score-chip.top .score { color:var(--orange); }
 
     /* ── SIMULATOR ── */
-    .sim-controls {
-      display:flex;
-      gap:12px;
-      margin-bottom:24px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
+    .sim-controls { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
 
     .sim-btn {
       padding:12px 28px;
-      background:linear-gradient(135deg,var(--gold),#b8900d);
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
       border:none;
       border-radius:8px;
-      color:#000;
+      color:var(--black);
       font-family:'Bebas Neue',sans-serif;
       font-size:18px;
       letter-spacing:2px;
       cursor:pointer;
+      font-weight:900;
       transition:all .2s;
-      box-shadow:0 4px 16px rgba(245,197,24,0.3);
+      box-shadow:0 4px 16px rgba(244,123,32,0.4);
     }
 
     .sim-btn:hover {
       transform:translateY(-2px);
-      box-shadow:0 8px 24px rgba(245,197,24,0.5);
+      box-shadow:0 8px 24px rgba(244,123,32,0.6);
     }
 
     .sim-results {
@@ -634,22 +677,15 @@
     }
 
     .sim-group-header {
-      background:linear-gradient(135deg,var(--bg3),var(--bg2));
-      border-bottom:2px solid var(--red);
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
       padding:9px 14px;
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
 
-    .sim-group-letter {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:20px;
-      color:var(--red);
-      letter-spacing:2px;
-    }
-
-    .sim-group-label { font-size:10px; color:var(--gray); letter-spacing:1px; }
+    .sim-group-letter { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--black); letter-spacing:2px; }
+    .sim-group-label  { font-size:10px; color:rgba(0,0,0,0.6); letter-spacing:1px; font-weight:700; }
 
     .sim-team-row {
       display:flex;
@@ -659,39 +695,20 @@
       border-bottom:1px solid rgba(255,255,255,0.04);
     }
 
-    .sim-team-row:hover { background:rgba(255,255,255,0.03); }
+    .sim-team-row:hover { background:rgba(244,123,32,0.06); }
     .sim-team-row:last-child { border-bottom:none; }
 
-    .sim-pos {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:18px;
-      color:var(--gray);
-      width:20px;
-      flex-shrink:0;
-    }
-
+    .sim-pos { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--gray); width:20px; flex-shrink:0; }
     .sim-pos.q { color:var(--green); }
 
-    .sim-flag {
-      width:26px;
-      height:18px;
-      object-fit:cover;
-      border-radius:2px;
-      flex-shrink:0;
-    }
-
-    .sim-team-name {
-      flex:1;
-      font-size:12px;
-      font-weight:600;
-      color:var(--white);
-    }
+    .sim-flag { width:26px; height:18px; object-fit:cover; border-radius:2px; flex-shrink:0; }
+    .sim-team-name { flex:1; font-size:12px; font-weight:600; }
 
     .qualify-tag {
       font-size:8px;
-      background:rgba(0,214,143,.12);
+      background:rgba(0,154,68,.12);
       color:var(--green);
-      border:1px solid rgba(0,214,143,.3);
+      border:1px solid rgba(0,154,68,.3);
       border-radius:4px;
       padding:1px 5px;
       letter-spacing:1px;
@@ -699,8 +716,14 @@
       margin-left:4px;
     }
 
-    .sim-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--gold); }
+    .sim-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
     .sim-gd  { font-size:11px; color:var(--gray); width:32px; text-align:right; }
+
+    /* Colour accent bar at bottom of cards */
+    .accent-bar {
+      height:3px;
+      background:linear-gradient(90deg, var(--green), var(--blue), var(--red), var(--orange));
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -712,7 +735,8 @@
       margin-top:40px;
     }
 
-    footer span { color:var(--red); }
+    footer .ft-logo { width:60px; object-fit:contain; margin:0 auto 12px; display:block; opacity:.7; }
+    footer span { color:var(--orange); }
   </style>
 </head>
 <body>
@@ -720,31 +744,7 @@
 <!-- HEADER -->
 <header>
   <div class="logo-area">
-    <!-- WC 2026 Logo SVG -->
-    <div class="wc-logo">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <!-- Trophy base -->
-        <rect x="35" y="78" width="30" height="5" rx="2" fill="#e8173a"/>
-        <rect x="30" y="83" width="40" height="4" rx="2" fill="#c0102c"/>
-        <!-- Trophy stem -->
-        <rect x="44" y="65" width="12" height="14" rx="2" fill="#e8173a"/>
-        <!-- Trophy cup -->
-        <path d="M25 20 Q25 58 50 62 Q75 58 75 20 Z" fill="url(#trophyGrad)"/>
-        <!-- Trophy handles -->
-        <path d="M25 25 Q12 28 14 42 Q16 52 26 50" stroke="#f5c518" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M75 25 Q88 28 86 42 Q84 52 74 50" stroke="#f5c518" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <!-- 26 text inside cup -->
-        <text x="50" y="46" text-anchor="middle" font-family="'Bebas Neue',Arial Black,sans-serif" font-size="22" font-weight="900" fill="#fff" letter-spacing="1">26</text>
-        <!-- Stars -->
-        <text x="50" y="17" text-anchor="middle" font-size="8" fill="#f5c518">★ ★ ★</text>
-        <defs>
-          <linearGradient id="trophyGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#e8173a"/>
-            <stop offset="100%" stop-color="#8b0020"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img class="header-logo" src="wc2026-logo.png" alt="FIFA World Cup 2026"/>
     <div class="logo-text">
       <h1>WC 2026 PREDICTOR</h1>
       <p>AI-Powered Match Prediction Model</p>
@@ -757,55 +757,46 @@
   </nav>
 </header>
 
-<!-- HERO -->
+<!-- HERO with official WC 2026 colour stripes -->
 <div class="hero">
-  <!-- Big WC logo in hero -->
-  <div class="hero-wc-logo">
-    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="hTrophy" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#e8173a"/>
-          <stop offset="100%" stop-color="#5a000f"/>
-        </linearGradient>
-        <linearGradient id="hGold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ffd84d"/>
-          <stop offset="100%" stop-color="#b8900d"/>
-        </linearGradient>
-      </defs>
-      <!-- Outer glow ring -->
-      <circle cx="100" cy="100" r="95" fill="none" stroke="url(#hGold)" stroke-width="1.5" opacity="0.4"/>
-      <circle cx="100" cy="100" r="88" fill="none" stroke="#e8173a" stroke-width="0.8" opacity="0.3"/>
-      <!-- Trophy base -->
-      <rect x="72" y="155" width="56" height="10" rx="4" fill="url(#hGold)"/>
-      <rect x="62" y="165" width="76" height="8" rx="4" fill="#b8900d"/>
-      <!-- Stem -->
-      <rect x="88" y="130" width="24" height="26" rx="4" fill="url(#hTrophy)"/>
-      <!-- Cup body -->
-      <path d="M45 40 Q45 118 100 126 Q155 118 155 40 Z" fill="url(#hTrophy)"/>
-      <!-- Handles -->
-      <path d="M45 52 Q20 60 24 90 Q28 110 48 105" stroke="url(#hGold)" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <path d="M155 52 Q180 60 176 90 Q172 110 152 105" stroke="url(#hGold)" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <!-- "26" inside cup -->
-      <text x="100" y="100" text-anchor="middle" dominant-baseline="central"
-            font-family="'Bebas Neue',Arial Black,sans-serif" font-size="52"
-            font-weight="900" fill="#fff" letter-spacing="3" opacity="0.95">26</text>
-      <!-- FIFA text -->
-      <text x="100" y="125" text-anchor="middle"
-            font-family="'Bebas Neue',Arial Black,sans-serif" font-size="13"
-            fill="url(#hGold)" letter-spacing="4">FIFA</text>
-      <!-- Stars -->
-      <text x="100" y="35" text-anchor="middle" font-size="14" fill="#f5c518" letter-spacing="4">★ ★ ★</text>
-    </svg>
+  <div class="hero-bg">
+    <!-- Left diagonal stripes -->
+    <div class="stripes-left">
+      <div class="s" style="width:28px;background:#009A44;"></div>
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+      <div class="s" style="width:28px;background:#0057A8;"></div>
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+      <div class="s" style="width:28px;background:#EF3340;"></div>
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+    </div>
+    <!-- Right diagonal stripes -->
+    <div class="stripes-right">
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+      <div class="s" style="width:28px;background:#EF3340;"></div>
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+      <div class="s" style="width:28px;background:#0057A8;"></div>
+      <div class="s" style="width:18px;background:#0D0700;"></div>
+      <div class="s" style="width:28px;background:#009A44;"></div>
+    </div>
   </div>
 
-  <div class="hero-tag">🏆 FIFA World Cup 2026 — USA · Canada · Mexico</div>
-  <h2>World Cup 2026<br>Prediction Engine</h2>
-  <p>ELO-powered predictions for all 48 teams across 12 groups.<br>Final confirmed bracket — playoff finals on March 31.</p>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">48</div><div class="stat-label">Teams</div></div>
-    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Groups</div></div>
-    <div class="stat"><div class="stat-num">104</div><div class="stat-label">Matches</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Host Nations</div></div>
+  <div class="hero-content">
+    <!-- Official Logo -->
+    <div class="hero-logo-wrap">
+      <img class="hero-logo" src="wc2026-logo.png" alt="FIFA World Cup 2026 Logo"/>
+    </div>
+
+    <div class="hero-text">
+      <div class="hero-tag">🌎 USA · Canada · Mexico · June–July 2026</div>
+      <h2>WORLD CUP<br><span>2026</span> PREDICTOR</h2>
+      <p>ELO-powered predictions for all 48 teams across 12 groups. Final confirmed bracket loaded — playoff finals on March 31.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">48</div><div class="stat-label">Teams</div></div>
+        <div class="stat"><div class="stat-num">12</div><div class="stat-label">Groups</div></div>
+        <div class="stat"><div class="stat-num">104</div><div class="stat-label">Matches</div></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-label">Hosts</div></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -824,6 +815,7 @@
     <div class="predictor-layout">
 
       <div class="predictor-panel">
+        <div class="accent-bar" style="margin:-24px -24px 20px;border-radius:12px 12px 0 0;"></div>
         <h3>⚡ Select Teams</h3>
         <div class="team-select-area">
           <select id="homeTeam"></select>
@@ -873,6 +865,7 @@
       </div>
 
       <div class="predictor-panel">
+        <div class="accent-bar" style="margin:-24px -24px 20px;border-radius:12px 12px 0 0;"></div>
         <h3>🎯 Likely Scorelines</h3>
         <div id="scoresPanel" style="color:var(--gray);font-size:13px;padding-top:20px;">
           Select two teams and click Predict to see the most likely scorelines.
@@ -898,28 +891,19 @@
 
 <!-- FOOTER -->
 <footer>
+  <img class="ft-logo" src="wc2026-logo.png" alt="WC 2026"/>
   FIFA World Cup 2026 Prediction Model · Built with <span>♥</span> · ELO + Poisson Engine
 </footer>
 
 <script>
-// ─────────────────────────────────────────────
-//  FLAG HELPER  (flagcdn.com)
-// ─────────────────────────────────────────────
-const FLAG = code => code
-  ? `https://flagcdn.com/w40/${code}.png`
-  : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="28"/>';
+const FLAG = c => c ? `https://flagcdn.com/w40/${c}.png` : '';
 
-// ─────────────────────────────────────────────
-//  GROUP DATA  (confirmed final draw)
-// ─────────────────────────────────────────────
-// Each team: { name, flag (ISO 3166-1 alpha-2 for flagcdn), elo, conf }
-// Playoff:   { playoff:true, label, team1, flag1, team2, flag2, elo }
 const GROUPS = {
   A: [
     { name:"Mexico",      flag:"mx", elo:1905, conf:"CONCACAF" },
     { name:"South Korea", flag:"kr", elo:1875, conf:"AFC" },
     { name:"South Africa",flag:"za", elo:1705, conf:"CAF" },
-    { playoff:true, label:"UEFA Playoff D", team1:"Czechia",  flag1:"cz", team2:"Denmark", flag2:"dk", elo:1800, conf:"UEFA", date:"Mar 31" },
+    { playoff:true, label:"UEFA Playoff D", team1:"Czechia", flag1:"cz", team2:"Denmark", flag2:"dk", elo:1800, conf:"UEFA", date:"Mar 31" },
   ],
   B: [
     { name:"Canada",      flag:"ca", elo:1815, conf:"CONCACAF" },
@@ -934,9 +918,9 @@ const GROUPS = {
     { name:"Haiti",    flag:"ht", elo:1540, conf:"CONCACAF" },
   ],
   D: [
-    { name:"USA",        flag:"us", elo:1910, conf:"CONCACAF" },
-    { name:"Australia",  flag:"au", elo:1855, conf:"AFC" },
-    { name:"Paraguay",   flag:"py", elo:1775, conf:"CONMEBOL" },
+    { name:"USA",       flag:"us", elo:1910, conf:"CONCACAF" },
+    { name:"Australia", flag:"au", elo:1855, conf:"AFC" },
+    { name:"Paraguay",  flag:"py", elo:1775, conf:"CONMEBOL" },
     { playoff:true, label:"UEFA Playoff C", team1:"Kosovo", flag1:"xk", team2:"Türkiye", flag2:"tr", elo:1800, conf:"UEFA", date:"Mar 31" },
   ],
   E: [
@@ -964,54 +948,37 @@ const GROUPS = {
     { name:"Cape Verde",   flag:"cv", elo:1590, conf:"CAF" },
   ],
   I: [
-    { name:"France",   flag:"fr", elo:2050, conf:"UEFA" },
-    { name:"Senegal",  flag:"sn", elo:1880, conf:"CAF" },
-    { name:"Norway",   flag:"no", elo:1795, conf:"UEFA" },
+    { name:"France",  flag:"fr", elo:2050, conf:"UEFA" },
+    { name:"Senegal", flag:"sn", elo:1880, conf:"CAF" },
+    { name:"Norway",  flag:"no", elo:1795, conf:"UEFA" },
     { playoff:true, label:"FIFA Playoff 2", team1:"Iraq", flag1:"iq", team2:"Suriname", flag2:"sr", elo:1650, conf:"TBD", date:"Mar 31" },
   ],
   J: [
     { name:"Argentina", flag:"ar", elo:2070, conf:"CONMEBOL" },
-    { name:"Colombia",  flag:"co", elo:1945, conf:"CONMEBOL" },
+    { name:"Algeria",   flag:"dz", elo:1805, conf:"CAF" },
     { name:"Austria",   flag:"at", elo:1845, conf:"UEFA" },
     { name:"Jordan",    flag:"jo", elo:1670, conf:"AFC" },
   ],
   K: [
     { name:"Portugal",   flag:"pt", elo:1990, conf:"UEFA" },
-    { name:"Colombia",   flag:"co", elo:1945, conf:"CONMEBOL" },
-    { name:"Uzbekistan", flag:"uz", elo:1685, conf:"AFC" },
     { playoff:true, label:"FIFA Playoff 1", team1:"DR Congo", flag1:"cd", team2:"Jamaica", flag2:"jm", elo:1650, conf:"TBD", date:"Mar 31" },
+    { name:"Uzbekistan", flag:"uz", elo:1685, conf:"AFC" },
+    { name:"Colombia",   flag:"co", elo:1945, conf:"CONMEBOL" },
   ],
   L: [
     { name:"England",  flag:"gb-eng", elo:2025, conf:"UEFA" },
-    { name:"Croatia",  flag:"hr", elo:1960, conf:"UEFA" },
-    { name:"Ghana",    flag:"gh", elo:1755, conf:"CAF" },
-    { name:"Panama",   flag:"pa", elo:1735, conf:"CONCACAF" },
+    { name:"Croatia",  flag:"hr",     elo:1960, conf:"UEFA" },
+    { name:"Ghana",    flag:"gh",     elo:1755, conf:"CAF" },
+    { name:"Panama",   flag:"pa",     elo:1735, conf:"CONCACAF" },
   ],
 };
 
-// Fix Group J (Algeria not Colombia per image)
-GROUPS.J = [
-  { name:"Argentina", flag:"ar", elo:2070, conf:"CONMEBOL" },
-  { name:"Algeria",   flag:"dz", elo:1805, conf:"CAF" },
-  { name:"Austria",   flag:"at", elo:1845, conf:"UEFA" },
-  { name:"Jordan",    flag:"jo", elo:1670, conf:"AFC" },
-];
-// Fix Group K (Colombia in K per image)
-GROUPS.K = [
-  { name:"Portugal",   flag:"pt", elo:1990, conf:"UEFA" },
-  { playoff:true, label:"FIFA Playoff 1", team1:"DR Congo", flag1:"cd", team2:"Jamaica", flag2:"jm", elo:1650, conf:"TBD", date:"Mar 31" },
-  { name:"Uzbekistan", flag:"uz", elo:1685, conf:"AFC" },
-  { name:"Colombia",   flag:"co", elo:1945, conf:"CONMEBOL" },
-];
-
-// ─────────────────────────────────────────────
-//  ELO ENGINE
-// ─────────────────────────────────────────────
+// ── ELO ENGINE ──
 function eloProbs(eloA, eloB) {
   const diff = eloA - eloB;
-  const rawWin = 1 / (1 + Math.pow(10, -diff / 400));
-  const drawBase = 0.28 * Math.exp(-Math.pow(diff / 600, 2));
-  return { win: rawWin*(1-drawBase), draw: drawBase, loss: (1-rawWin)*(1-drawBase) };
+  const rawWin = 1 / (1 + Math.pow(10, -diff/400));
+  const drawBase = 0.28 * Math.exp(-Math.pow(diff/600, 2));
+  return { win:rawWin*(1-drawBase), draw:drawBase, loss:(1-rawWin)*(1-drawBase) };
 }
 
 function poissonP(lambda, k) {
@@ -1023,57 +990,49 @@ function poissonP(lambda, k) {
 function expectedGoals(eloA, eloB) {
   const diff = eloA - eloB;
   return {
-    lambdaA: Math.max(0.3, Math.min(4.5, 1.35 * Math.exp(diff/1400))),
-    lambdaB: Math.max(0.2, Math.min(3.5, 1.35 * Math.exp(-diff/1400))),
+    lambdaA: Math.max(0.3, Math.min(4.5, 1.35*Math.exp(diff/1400))),
+    lambdaB: Math.max(0.2, Math.min(3.5, 1.35*Math.exp(-diff/1400))),
   };
 }
 
 function topScorelines(eloA, eloB, n=6) {
-  const { lambdaA, lambdaB } = expectedGoals(eloA, eloB);
-  const scores = [];
-  for (let g=0;g<=6;g++) for (let h=0;h<=6;h++)
-    scores.push({ s:`${g}-${h}`, p: poissonP(lambdaA,g)*poissonP(lambdaB,h) });
+  const {lambdaA,lambdaB} = expectedGoals(eloA,eloB);
+  const scores=[];
+  for(let g=0;g<=6;g++) for(let h=0;h<=6;h++)
+    scores.push({s:`${g}-${h}`, p:poissonP(lambdaA,g)*poissonP(lambdaB,h)});
   scores.sort((a,b)=>b.p-a.p);
   const total = scores.reduce((s,x)=>s+x.p,0);
   return scores.slice(0,n).map(x=>({...x,p:x.p/total}));
 }
 
-// ─────────────────────────────────────────────
-//  RENDER GROUPS
-// ─────────────────────────────────────────────
+// ── RENDER GROUPS ──
 function renderGroups() {
   const grid = document.getElementById('groupsGrid');
   grid.innerHTML = '';
-
   for (const [letter, teams] of Object.entries(GROUPS)) {
-    const card = document.createElement('div');
-    card.className = 'group-card';
-
     const rows = teams.map(t => {
-      if (t.playoff) {
-        return `
-          <div class="playoff-row">
-            <div class="playoff-header-row">
-              <div class="playoff-badge">FINAL</div>
-              <div class="playoff-label">${t.label}</div>
-              <div class="playoff-date">📅 ${t.date}</div>
+      if (t.playoff) return `
+        <div class="playoff-row">
+          <div class="playoff-header-row">
+            <div class="playoff-badge">FINAL</div>
+            <div class="playoff-label">${t.label}</div>
+            <div class="playoff-date">📅 ${t.date}</div>
+          </div>
+          <div class="playoff-teams-row">
+            <div class="playoff-team">
+              <img class="flag-img" src="${FLAG(t.flag1)}" alt="${t.team1}" onerror="this.style.opacity='.2'"/>
+              <div class="playoff-team-name">${t.team1}</div>
             </div>
-            <div class="playoff-teams-row">
-              <div class="playoff-team">
-                <img class="flag-img" src="${FLAG(t.flag1)}" alt="${t.team1}" onerror="this.style.display='none'"/>
-                <div class="playoff-team-name">${t.team1}</div>
-              </div>
-              <div class="vs-mini">VS</div>
-              <div class="playoff-team" style="justify-content:flex-end;text-align:right;">
-                <div class="playoff-team-name">${t.team2}</div>
-                <img class="flag-img" src="${FLAG(t.flag2)}" alt="${t.team2}" onerror="this.style.display='none'"/>
-              </div>
+            <div class="vs-mini">VS</div>
+            <div class="playoff-team" style="justify-content:flex-end;text-align:right">
+              <div class="playoff-team-name">${t.team2}</div>
+              <img class="flag-img" src="${FLAG(t.flag2)}" alt="${t.team2}" onerror="this.style.opacity='.2'"/>
             </div>
-          </div>`;
-      }
+          </div>
+        </div>`;
       return `
         <div class="team-row" onclick="quickPredict('${t.name}')">
-          <img class="flag-img" src="${FLAG(t.flag)}" alt="${t.name}" onerror="this.style.opacity='.3'"/>
+          <img class="flag-img" src="${FLAG(t.flag)}" alt="${t.name}" onerror="this.style.opacity='.2'"/>
           <div class="team-info">
             <div class="team-name">${t.name}</div>
             <div class="team-conf">${t.conf}</div>
@@ -1082,68 +1041,58 @@ function renderGroups() {
         </div>`;
     }).join('');
 
+    const card = document.createElement('div');
+    card.className = 'group-card';
     card.innerHTML = `
       <div class="group-header">
         <div class="group-letter">GROUP ${letter}</div>
         <div class="group-label">4 Teams</div>
       </div>
-      <div class="group-teams">${rows}</div>`;
-
+      <div class="group-teams">${rows}</div>
+      <div class="accent-bar"></div>`;
     grid.appendChild(card);
   }
 }
 
-// ─────────────────────────────────────────────
-//  POPULATE SELECTS
-// ─────────────────────────────────────────────
+// ── SELECTS ──
 function populateSelects() {
-  const all = [];
-  for (const [grp, teams] of Object.entries(GROUPS)) {
+  const all=[];
+  for (const [grp,teams] of Object.entries(GROUPS))
     teams.forEach(t => {
-      if (!t.playoff) all.push({...t, group:grp});
+      if(!t.playoff) all.push({...t,group:grp});
       else {
-        all.push({ name:t.team1, flag:t.flag1, elo:t.elo, conf:t.conf, group:grp });
-        all.push({ name:t.team2, flag:t.flag2, elo:t.elo, conf:t.conf, group:grp });
+        all.push({name:t.team1,flag:t.flag1,elo:t.elo,conf:t.conf,group:grp});
+        all.push({name:t.team2,flag:t.flag2,elo:t.elo,conf:t.conf,group:grp});
       }
     });
-  }
   all.sort((a,b)=>b.elo-a.elo);
-
-  const opts = all.map(t =>
-    `<option value="${t.name}" data-flag="${t.flag}" data-elo="${t.elo}">
-      ${t.name} (ELO ${t.elo})
-    </option>`).join('');
-
+  const opts = all.map(t=>`<option value="${t.name}" data-flag="${t.flag}" data-elo="${t.elo}">${t.name} (ELO ${t.elo})</option>`).join('');
   document.getElementById('homeTeam').innerHTML = opts;
   document.getElementById('awayTeam').innerHTML = opts;
   document.getElementById('awayTeam').selectedIndex = 1;
 }
 
-// ─────────────────────────────────────────────
-//  PREDICT
-// ─────────────────────────────────────────────
+// ── PREDICT ──
 function getTeam(name) {
   for (const teams of Object.values(GROUPS))
     for (const t of teams) {
-      if (!t.playoff && t.name === name) return t;
-      if (t.playoff) {
-        if (t.team1 === name) return { name:t.team1, flag:t.flag1, elo:t.elo, conf:t.conf };
-        if (t.team2 === name) return { name:t.team2, flag:t.flag2, elo:t.elo, conf:t.conf };
+      if(!t.playoff && t.name===name) return t;
+      if(t.playoff) {
+        if(t.team1===name) return {name:t.team1,flag:t.flag1,elo:t.elo,conf:t.conf};
+        if(t.team2===name) return {name:t.team2,flag:t.flag2,elo:t.elo,conf:t.conf};
       }
     }
   return null;
 }
 
 function predictMatch() {
-  const homeName = document.getElementById('homeTeam').value;
-  const awayName = document.getElementById('awayTeam').value;
-  if (homeName === awayName) { alert('Pick two different teams!'); return; }
-
-  const home = getTeam(homeName), away = getTeam(awayName);
-  if (!home || !away) return;
+  const homeName=document.getElementById('homeTeam').value;
+  const awayName=document.getElementById('awayTeam').value;
+  if(homeName===awayName){alert('Pick two different teams!');return;}
+  const home=getTeam(homeName), away=getTeam(awayName);
+  if(!home||!away) return;
 
   const probs = eloProbs(home.elo, away.elo);
-
   document.getElementById('homeFlag').src = FLAG(home.flag);
   document.getElementById('awayFlag').src = FLAG(away.flag);
   document.getElementById('homeName').textContent = home.name;
@@ -1152,95 +1101,79 @@ function predictMatch() {
   document.getElementById('awayEloLabel').textContent = `ELO ${away.elo}`;
   document.getElementById('homeLabel2').textContent = home.name.split(' ')[0];
   document.getElementById('awayLabel2').textContent = away.name.split(' ')[0];
-
   document.getElementById('resultCard').classList.add('show');
 
-  setTimeout(() => {
-    const hp = Math.round(probs.win*100), dp = Math.round(probs.draw*100), ap = Math.round(probs.loss*100);
-    document.getElementById('homeBar').style.width = hp+'%';
-    document.getElementById('homeBar').textContent = hp+'%';
-    document.getElementById('drawBar').style.width = dp+'%';
-    document.getElementById('drawBar').textContent = dp+'%';
-    document.getElementById('awayBar').style.width = ap+'%';
-    document.getElementById('awayBar').textContent = ap+'%';
+  setTimeout(()=>{
+    const hp=Math.round(probs.win*100), dp=Math.round(probs.draw*100), ap=Math.round(probs.loss*100);
+    ['home','draw','away'].forEach((id,i)=>{
+      const pct=[hp,dp,ap][i];
+      document.getElementById(id+'Bar').style.width=pct+'%';
+      document.getElementById(id+'Bar').textContent=pct+'%';
+    });
+    let winner,conf;
+    if(hp>ap&&hp>dp){winner=`🏆 ${home.name} wins`;conf=hp;}
+    else if(ap>hp&&ap>dp){winner=`🏆 ${away.name} wins`;conf=ap;}
+    else{winner=`🤝 Most likely a Draw`;conf=dp;}
+    document.getElementById('winnerBadge').textContent=`${winner} · ${conf}% confidence`;
+  },50);
 
-    let winner, conf;
-    if (hp > ap && hp > dp)      { winner=`🏆 ${home.name} wins`; conf=hp; }
-    else if (ap > hp && ap > dp) { winner=`🏆 ${away.name} wins`; conf=ap; }
-    else                          { winner=`🤝 Most likely a Draw`; conf=dp; }
-    document.getElementById('winnerBadge').textContent = `${winner} · ${conf}% confidence`;
-  }, 50);
-
-  // Scorelines
   const scores = topScorelines(home.elo, away.elo);
-  document.getElementById('scoresPanel').innerHTML = `
+  document.getElementById('scoresPanel').innerHTML=`
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)"
-           src="${FLAG(home.flag)}" alt="${home.name}"/>
+      <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)" src="${FLAG(home.flag)}" alt=""/>
       <span style="font-weight:700;font-size:13px;">${home.name}</span>
-      <span style="color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:16px;">VS</span>
+      <span style="color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:16px;">VS</span>
       <span style="font-weight:700;font-size:13px;">${away.name}</span>
-      <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)"
-           src="${FLAG(away.flag)}" alt="${away.name}"/>
+      <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)" src="${FLAG(away.flag)}" alt=""/>
     </div>
     <div class="scorelines-grid">
       ${scores.map((s,i)=>`
         <div class="score-chip ${i===0?'top':''}">
           <div class="score">${s.s}</div>
           <div class="prob">${(s.p*100).toFixed(1)}%</div>
-          ${i===0?'<div style="font-size:9px;color:var(--gold);margin-top:2px;letter-spacing:1px;">MOST LIKELY</div>':''}
+          ${i===0?'<div style="font-size:9px;color:var(--orange);margin-top:2px;letter-spacing:1px;">MOST LIKELY</div>':''}
         </div>`).join('')}
     </div>
     <p style="color:var(--gray);font-size:11px;margin-top:14px;line-height:1.6;">
-      Based on ELO ${home.elo} vs ${away.elo} · Poisson distribution model
+      ELO ${home.elo} vs ${away.elo} · Poisson distribution model
     </p>`;
 }
 
 function quickPredict(name) {
-  showSection('predictor', document.querySelectorAll('nav button')[1]);
-  document.getElementById('homeTeam').value = name;
-  setTimeout(()=>predictMatch(), 100);
+  showSection('predictor',document.querySelectorAll('nav button')[1]);
+  document.getElementById('homeTeam').value=name;
+  setTimeout(()=>predictMatch(),100);
 }
 
-// ─────────────────────────────────────────────
-//  SIMULATOR
-// ─────────────────────────────────────────────
-function poissonRand(lam) {
-  let L=Math.exp(-lam),k=0,p=1;
-  do{k++;p*=Math.random();}while(p>L);
-  return k-1;
+// ── SIMULATOR ──
+function poissonRand(lam){let L=Math.exp(-lam),k=0,p=1;do{k++;p*=Math.random();}while(p>L);return k-1;}
+
+function flatTeams(group){
+  return group.map(t=>t.playoff
+    ? {name:`${t.team1}/${t.team2}`,flag:t.flag1,elo:t.elo,conf:t.conf}
+    : {...t});
 }
 
-function flatTeams(group) {
-  const out=[];
-  for (const t of group) {
-    if (!t.playoff) out.push({...t});
-    else out.push({name:`${t.team1}/${t.team2}`, flag:t.flag1, elo:t.elo, conf:t.conf});
-  }
-  return out;
-}
-
-function simulateGroup(teams) {
-  const s = teams.map(t=>({...t,pts:0,gf:0,ga:0,gd:0}));
-  for (let i=0;i<s.length;i++) for (let j=i+1;j<s.length;j++) {
+function simulateGroup(teams){
+  const s=teams.map(t=>({...t,pts:0,gf:0,ga:0,gd:0}));
+  for(let i=0;i<s.length;i++) for(let j=i+1;j<s.length;j++){
     const a=s[i],b=s[j];
     const {lambdaA,lambdaB}=expectedGoals(a.elo,b.elo);
     const ga=poissonRand(lambdaA),gb=poissonRand(lambdaB);
     a.gf+=ga;a.ga+=gb;a.gd+=ga-gb;
     b.gf+=gb;b.ga+=ga;b.gd+=gb-ga;
-    if(ga>gb){a.pts+=3;}else if(ga<gb){b.pts+=3;}else{a.pts+=1;b.pts+=1;}
+    if(ga>gb)a.pts+=3;else if(ga<gb)b.pts+=3;else{a.pts+=1;b.pts+=1;}
   }
   s.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf);
   return s;
 }
 
-function runSimulation() {
-  const container = document.getElementById('simResults');
+function runSimulation(){
+  const container=document.getElementById('simResults');
   container.innerHTML='';
-  for (const [letter,teams] of Object.entries(GROUPS)) {
-    const flat = flatTeams(teams);
-    const result = simulateGroup(flat);
-    const card = document.createElement('div');
+  for(const [letter,teams] of Object.entries(GROUPS)){
+    const result=simulateGroup(flatTeams(teams));
+    const card=document.createElement('div');
     card.className='sim-group-card';
     card.innerHTML=`
       <div class="sim-group-header">
@@ -1250,30 +1183,24 @@ function runSimulation() {
       ${result.map((t,i)=>`
         <div class="sim-team-row">
           <div class="sim-pos ${i<2?'q':''}">${i<2?'✓':i+1}</div>
-          <img class="sim-flag" src="${FLAG(t.flag)}" alt="${t.name}" onerror="this.style.opacity='.3'"/>
-          <div class="sim-team-name">
-            ${t.name}${i<2?'<span class="qualify-tag">Q</span>':''}
-          </div>
+          <img class="sim-flag" src="${FLAG(t.flag)}" alt="${t.name}" onerror="this.style.opacity='.2'"/>
+          <div class="sim-team-name">${t.name}${i<2?'<span class="qualify-tag">Q</span>':''}</div>
           <div class="sim-gd">${t.gd>0?'+':''}${t.gd}</div>
           <div class="sim-pts">${t.pts}</div>
-        </div>`).join('')}`;
+        </div>`).join('')}
+      <div class="accent-bar"></div>`;
     container.appendChild(card);
   }
 }
 
-// ─────────────────────────────────────────────
-//  NAV
-// ─────────────────────────────────────────────
-function showSection(id, btn) {
+// ── NAV ──
+function showSection(id,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(btn) btn.classList.add('active');
 }
 
-// ─────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────
 renderGroups();
 populateSelects();
 </script>
