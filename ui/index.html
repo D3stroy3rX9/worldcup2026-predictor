@@ -1272,29 +1272,33 @@ function poissonP(lambda, k) {
 
 function expectedGoals(eloA, eloB, addVariance=false) {
   const diff = eloA - eloB;
-  // Higher sensitivity (800 vs old 1400) → bigger spread for big ELO gaps
-  let lA = 1.25 * Math.exp(diff / 800);
-  let lB = 1.25 * Math.exp(-diff / 800);
-  // Add per-match random variance so predictions aren't identical every click
+  // Base 1.5 ≈ WC group-stage average (~3.0 total goals/game)
+  // Divisor 500 gives realistic mismatch scaling:
+  //   300 ELO gap  →  ~2.5 vs 0.9  (e.g. France vs Panama)
+  //   400 ELO gap  →  ~3.3 vs 0.7  (e.g. Argentina vs Jordan)
+  //   500 ELO gap  →  ~4.5 vs 0.5  (heavy mismatch)
+  //    50 ELO gap  →  ~1.65 vs 1.37 (e.g. England vs Croatia)
+  let lA = 1.5 * Math.exp(diff / 500);
+  let lB = 1.5 * Math.exp(-diff / 500);
+  // Per-match variance ±25%  — makes each prediction click feel unique
   if (addVariance) {
-    lA *= 0.80 + Math.random() * 0.40;  // ±20%
-    lB *= 0.80 + Math.random() * 0.40;
+    lA *= 0.75 + Math.random() * 0.50;
+    lB *= 0.75 + Math.random() * 0.50;
   }
   return {
-    lambdaA: Math.max(0.25, Math.min(5.0, lA)),
-    lambdaB: Math.max(0.20, Math.min(4.0, lB)),
+    lambdaA: Math.max(0.20, Math.min(6.0, lA)),
+    lambdaB: Math.max(0.15, Math.min(5.0, lB)),
   };
 }
 
 function topScorelines(eloA, eloB, n=6) {
-  // Pass addVariance=true so each click gives different scorelines
   const {lambdaA,lambdaB} = expectedGoals(eloA,eloB,true);
   const scores=[];
   for(let g=0;g<=6;g++) for(let h=0;h<=6;h++)
     scores.push({s:`${g}-${h}`, p:poissonP(lambdaA,g)*poissonP(lambdaB,h)});
   scores.sort((a,b)=>b.p-a.p);
   const total = scores.reduce((s,x)=>s+x.p,0);
-  return scores.slice(0,n).map(x=>({...x,p:x.p/total}));
+  return { scorelines: scores.slice(0,n).map(x=>({...x,p:x.p/total})), xgA: lambdaA, xgB: lambdaB };
 }
 
 // ── RENDER GROUPS ──
@@ -1409,7 +1413,7 @@ function predictMatch() {
     document.getElementById('winnerBadge').textContent=`${winner} · ${conf}% confidence`;
   },50);
 
-  const scores = topScorelines(home.elo, away.elo);
+  const {scorelines: scores, xgA, xgB} = topScorelines(home.elo, away.elo);
   document.getElementById('scoresPanel').innerHTML=`
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)" src="${FLAG(home.flag)}" alt=""/>
@@ -1417,6 +1421,16 @@ function predictMatch() {
       <span style="color:var(--orange);font-family:'Bebas Neue',sans-serif;font-size:16px;">VS</span>
       <span style="font-weight:700;font-size:13px;">${away.name}</span>
       <img style="width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 6px rgba(0,0,0,.5)" src="${FLAG(away.flag)}" alt=""/>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <div style="flex:1;background:rgba(244,123,32,0.1);border:1px solid rgba(244,123,32,0.25);border-radius:8px;padding:8px 10px;text-align:center;">
+        <div style="font-size:10px;color:var(--gray);letter-spacing:1px;margin-bottom:3px;">xG ${home.name.split(' ')[0].toUpperCase()}</div>
+        <div style="font-size:20px;font-family:'Bebas Neue',sans-serif;color:var(--orange);">${xgA.toFixed(2)}</div>
+      </div>
+      <div style="flex:1;background:rgba(244,123,32,0.1);border:1px solid rgba(244,123,32,0.25);border-radius:8px;padding:8px 10px;text-align:center;">
+        <div style="font-size:10px;color:var(--gray);letter-spacing:1px;margin-bottom:3px;">xG ${away.name.split(' ')[0].toUpperCase()}</div>
+        <div style="font-size:20px;font-family:'Bebas Neue',sans-serif;color:var(--orange);">${xgB.toFixed(2)}</div>
+      </div>
     </div>
     <div class="scorelines-grid">
       ${scores.map((s,i)=>`
@@ -1427,7 +1441,7 @@ function predictMatch() {
         </div>`).join('')}
     </div>
     <p style="color:var(--gray);font-size:11px;margin-top:14px;line-height:1.6;">
-      ELO ${home.elo} vs ${away.elo} · Poisson distribution model
+      ELO ${home.elo} vs ${away.elo} · Poisson distribution model · xG includes match variance
     </p>`;
 }
 
