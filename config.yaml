@@ -1,0 +1,79 @@
+# World Cup 2026 Predictor Configuration
+
+# Project paths
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  predictions: "data/predictions"
+  models: "models"
+  logs: "logs"
+
+# Data sources
+data_sources:
+  # Kaggle datasets (download manually or use kaggle CLI)
+  kaggle:
+    international_results: "martj42/international-football-results-from-1872-to-2017"
+    fifa_rankings: "cashncarry/fifaworldranking"
+  
+  # Free APIs (no CC required)
+  apis:
+    football_data:
+      base_url: "https://api.football-data.org/v4"
+      # Get free API key at: https://www.football-data.org/client/register
+      # Only requires email, no CC
+      api_key: ""  # Add your key here after registration
+    
+  # Web scraping targets
+  scraping:
+    elo_ratings: "https://www.eloratings.net/"
+    fbref: "https://fbref.com/"
+    transfermarkt: "https://www.transfermarkt.com/"
+
+# World Cup 2026 Configuration
+worldcup2026:
+  name: "FIFA World Cup 2026"
+  host_countries: ["USA", "Canada", "Mexico"]
+  start_date: "2026-06-11"
+  end_date: "2026-07-19"
+  total_teams: 48
+  groups: 12
+  teams_per_group: 4
+  
+# Model configuration
+models:
+  match_outcome:
+    algorithm: "xgboost"
+    use_gpu: true
+    hyperparameters:
+      n_estimators: 500
+      max_depth: 6
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      
+  scoreline:
+    algorithm: "poisson_regression"
+    max_goals: 10  # Maximum goals to consider per team
+    
+  tournament_simulation:
+    num_simulations: 10000
+    
+  drama_score:
+    algorithm: "xgboost"
+    features:
+      - rating_difference
+      - historical_volatility
+      - knockout_pressure
+      - rivalry_score
+
+# Feature engineering settings
+features:
+  form_matches: 10  # Number of recent matches for form calculation
+  h2h_years: 20     # Years of head-to-head history to consider
+  elo_k_factor: 20  # K-factor for Elo calculations
+
+# Training settings
+training:
+  test_worldcups: [2014, 2018, 2022]  # World Cups to use for backtesting
+  train_start_year: 2010
+  random_seed: 42

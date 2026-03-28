@@ -1,0 +1,235 @@
+# World Cup 2026 Groups - Technical Draw Results
+# Last updated: December 2024
+# Note: Some spots are TBD (playoff winners to be determined)
+
+groups:
+  A:
+    - name: "Mexico"
+      code: "MEX"
+      confederation: "CONCACAF"
+      pot: 1
+    - name: "South Africa"
+      code: "RSA"
+      confederation: "CAF"
+      pot: 3
+    - name: "South Korea"
+      code: "KOR"
+      confederation: "AFC"
+      pot: 2
+    - name: "TBD_A4"  # Playoff: CZE/DEN/IRL/MKD
+      code: "TBD"
+      confederation: "UEFA"
+      pot: 4
+      playoff_teams: ["Czech Republic", "Denmark", "Ireland", "North Macedonia"]
+
+  B:
+    - name: "Canada"
+      code: "CAN"
+      confederation: "CONCACAF"
+      pot: 1
+    - name: "TBD_B2"  # Playoff: BIH/ITA/NIR/WAL
+      code: "TBD"
+      confederation: "UEFA"
+      pot: 2
+      playoff_teams: ["Bosnia and Herzegovina", "Italy", "Northern Ireland", "Wales"]
+    - name: "Qatar"
+      code: "QAT"
+      confederation: "AFC"
+      pot: 3
+    - name: "Switzerland"
+      code: "SUI"
+      confederation: "UEFA"
+      pot: 4
+
+  C:
+    - name: "Brazil"
+      code: "BRA"
+      confederation: "CONMEBOL"
+      pot: 1
+    - name: "Morocco"
+      code: "MAR"
+      confederation: "CAF"
+      pot: 2
+    - name: "Haiti"
+      code: "HAI"
+      confederation: "CONCACAF"
+      pot: 3
+    - name: "Scotland"
+      code: "SCO"
+      confederation: "UEFA"
+      pot: 4
+
+  D:
+    - name: "USA"
+      code: "USA"
+      confederation: "CONCACAF"
+      pot: 1
+    - name: "Paraguay"
+      code: "PAR"
+      confederation: "CONMEBOL"
+      pot: 2
+    - name: "Australia"
+      code: "AUS"
+      confederation: "AFC"
+      pot: 3
+    - name: "TBD_D4"  # Playoff: KOS/BOU/SVK/TUR
+      code: "TBD"
+      confederation: "UEFA/CAF"
+      pot: 4
+      playoff_teams: ["Kosovo", "Burkina Faso", "Slovakia", "Turkey"]
+
+  E:
+    - name: "Germany"
+      code: "GER"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Curaçao"
+      code: "CUW"
+      confederation: "CONCACAF"
+      pot: 2
+    - name: "Côte d'Ivoire"
+      code: "CIV"
+      confederation: "CAF"
+      pot: 3
+    - name: "Ecuador"
+      code: "ECU"
+      confederation: "CONMEBOL"
+      pot: 4
+
+  F:
+    - name: "Netherlands"
+      code: "NED"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Japan"
+      code: "JPN"
+      confederation: "AFC"
+      pot: 2
+    - name: "TBD_F3"  # Playoff: ALB/POL/SWE/UKR
+      code: "TBD"
+      confederation: "UEFA"
+      pot: 3
+      playoff_teams: ["Albania", "Poland", "Sweden", "Ukraine"]
+    - name: "Tunisia"
+      code: "TUN"
+      confederation: "CAF"
+      pot: 4
+
+  G:
+    - name: "Belgium"
+      code: "BEL"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Egypt"
+      code: "EGY"
+      confederation: "CAF"
+      pot: 2
+    - name: "Iran"
+      code: "IRN"
+      confederation: "AFC"
+      pot: 3
+    - name: "New Zealand"
+      code: "NZL"
+      confederation: "OFC"
+      pot: 4
+
+  H:
+    - name: "Spain"
+      code: "ESP"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Cabo Verde"
+      code: "CPV"
+      confederation: "CAF"
+      pot: 2
+    - name: "Saudi Arabia"
+      code: "KSA"
+      confederation: "AFC"
+      pot: 3
+    - name: "Uruguay"
+      code: "URU"
+      confederation: "CONMEBOL"
+      pot: 4
+
+  I:
+    - name: "France"
+      code: "FRA"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Senegal"
+      code: "SEN"
+      confederation: "CAF"
+      pot: 2
+    - name: "TBD_I3"  # Playoff: BOL/IRQ/SUR
+      code: "TBD"
+      confederation: "CONMEBOL/AFC/CONCACAF"
+      pot: 3
+      playoff_teams: ["Bolivia", "Iraq", "Suriname"]
+    - name: "Norway"
+      code: "NOR"
+      confederation: "UEFA"
+      pot: 4
+
+  J:
+    - name: "Argentina"
+      code: "ARG"
+      confederation: "CONMEBOL"
+      pot: 1
+    - name: "Algeria"
+      code: "ALG"
+      confederation: "CAF"
+      pot: 2
+    - name: "Austria"
+      code: "AUT"
+      confederation: "UEFA"
+      pot: 3
+    - name: "Jordan"
+      code: "JOR"
+      confederation: "AFC"
+      pot: 4
+
+  K:
+    - name: "Portugal"
+      code: "POR"
+      confederation: "UEFA"
+      pot: 1
+    - name: "TBD_K2"  # Playoff: COD/JAM/NCL
+      code: "TBD"
+      confederation: "CAF/CONCACAF/OFC"
+      pot: 2
+      playoff_teams: ["DR Congo", "Jamaica", "New Caledonia"]
+    - name: "Uzbekistan"
+      code: "UZB"
+      confederation: "AFC"
+      pot: 3
+    - name: "Colombia"
+      code: "COL"
+      confederation: "CONMEBOL"
+      pot: 4
+
+  L:
+    - name: "England"
+      code: "ENG"
+      confederation: "UEFA"
+      pot: 1
+    - name: "Croatia"
+      code: "CRO"
+      confederation: "UEFA"
+      pot: 2
+    - name: "Ghana"
+      code: "GHA"
+      confederation: "CAF"
+      pot: 3
+    - name: "Panama"
+      code: "PAN"
+      confederation: "CONCACAF"
+      pot: 4
+
+# Confederation codes
+confederations:
+  UEFA: "Europe"
+  CONMEBOL: "South America"
+  CONCACAF: "North/Central America & Caribbean"
+  CAF: "Africa"
+  AFC: "Asia"
+  OFC: "Oceania"
