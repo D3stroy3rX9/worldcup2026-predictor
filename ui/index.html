@@ -817,24 +817,43 @@
       display:none; align-items:center; justify-content:center; overflow:hidden;
     }
     #champModal.open { display:flex; }
+    .champ-close-btn {
+      position:absolute; top:18px; right:20px;
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
+      color:var(--white); width:36px; height:36px; border-radius:50%;
+      cursor:pointer; font-size:18px; font-weight:900;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s; z-index:20; line-height:1;
+    }
+    .champ-close-btn:hover { background:rgba(255,255,255,.25); }
     .champ-box {
       text-align:center; position:relative; z-index:10;
-      padding:24px 20px; max-width:560px; width:92%;
+      padding:36px 28px 28px; max-width:540px; width:92%;
+      animation:champBoxIn .5s cubic-bezier(.34,1.56,.64,1);
     }
-    .champ-crown { font-size:56px; display:block; margin-bottom:4px; opacity:0; animation:crownDrop .7s cubic-bezier(.34,1.56,.64,1) .5s forwards; }
-    @keyframes crownDrop { from{opacity:0;transform:translateY(-40px) scale(1.6)}to{opacity:1;transform:translateY(0) scale(1)} }
-    .champ-pre { font-size:11px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; margin-bottom:14px; opacity:0; animation:fadeInUp .5s ease .2s forwards; }
-    .champ-flag-wrap { margin:0 auto 12px; display:inline-block; opacity:0; animation:flagBurst .7s cubic-bezier(.34,1.56,.64,1) .65s forwards; }
-    @keyframes flagBurst { from{opacity:0;transform:scale(0.3) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)} }
-    .champ-flag-big { width:148px; height:104px; object-fit:cover; border-radius:10px; box-shadow:0 0 70px rgba(245,197,24,.9),0 0 140px rgba(245,197,24,.4); }
+    @keyframes champBoxIn { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+    /* All text visible by default — JS adds .reveal class to animate in */
+    .champ-crown { font-size:52px; display:block; margin-bottom:6px; }
+    .champ-pre { font-size:11px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; margin-bottom:16px; }
+    .champ-flag-wrap { margin:0 auto 14px; display:inline-block; }
+    /* Flag: crisp image, clean gold border — NO blur-inducing box-shadow */
+    .champ-flag-big {
+      width:150px; height:105px; object-fit:cover; border-radius:10px;
+      border:3px solid var(--gold);
+      box-shadow:0 4px 24px rgba(0,0,0,.6);
+      image-rendering:auto;
+    }
     .champ-name {
-      font-family:'Bebas Neue',sans-serif; font-size:clamp(46px,12vw,90px);
+      font-family:'Bebas Neue',sans-serif; font-size:clamp(46px,12vw,88px);
       letter-spacing:4px; color:var(--white); line-height:1;
-      text-shadow:0 0 60px rgba(244,123,32,.9),0 0 120px rgba(244,123,32,.4);
-      opacity:0; animation:fadeInUp .6s ease .85s forwards;
+      text-shadow:0 2px 24px rgba(244,123,32,.7);
     }
-    .champ-score-line { font-size:13px; color:var(--gold); letter-spacing:2px; margin-top:10px; opacity:0; animation:fadeInUp .5s ease 1.1s forwards; }
-    .champ-buttons { display:flex; gap:12px; justify-content:center; margin-top:24px; opacity:0; animation:fadeInUp .5s ease 1.35s forwards; flex-wrap:wrap; }
+    .champ-score-line {
+      font-size:14px; color:var(--gold); letter-spacing:2px; margin-top:12px;
+      background:rgba(245,197,24,.08); border:1px solid rgba(245,197,24,.2);
+      border-radius:8px; padding:8px 18px; display:inline-block;
+    }
+    .champ-buttons { display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
     .champ-btn { padding:11px 28px; border-radius:8px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; cursor:pointer; transition:all .2s; }
     .champ-btn.primary { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border:none; color:var(--black); }
     .champ-btn.secondary { background:transparent; border:1px solid rgba(255,255,255,.2); color:var(--white); }
@@ -844,6 +863,13 @@
     .countdown-label { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:3px; color:var(--orange); margin-bottom:16px; }
     .countdown-num { font-family:'Bebas Neue',sans-serif; font-size:130px; color:var(--white); text-shadow:0 0 50px rgba(244,123,32,.9); animation:countPulse .9s ease; line-height:1; }
     @keyframes countPulse { 0%{transform:scale(2);opacity:0} 40%{opacity:1} 100%{transform:scale(1);opacity:1} }
+    /* Upset badge in match cards */
+    .upset-tag {
+      background:rgba(239,51,64,.15); color:var(--red);
+      border:1px solid rgba(239,51,64,.35); border-radius:4px;
+      font-size:8px; font-weight:800; letter-spacing:1px;
+      padding:2px 6px; text-transform:uppercase; flex-shrink:0;
+    }
     /* Confetti */
     .confetti-piece { position:fixed; border-radius:2px; top:-20px; animation:confettiFall linear forwards; z-index:501; pointer-events:none; }
     @keyframes confettiFall { to{transform:translateY(110vh) rotate(720deg) skewX(10deg);opacity:0} }
@@ -1301,6 +1327,7 @@
 
 <!-- CHAMPION MODAL -->
 <div id="champModal">
+  <button class="champ-close-btn" onclick="document.getElementById('champModal').classList.remove('open')" title="Close">✕</button>
   <div class="champ-box" id="champBox"></div>
 </div>
 
@@ -1801,12 +1828,16 @@ function matchCardHtml(teamA, teamB, res, label, num){
   const bWin=done&&!aWin;
   let foot='';
   if(done){
+    const loserElo=aWin?teamB.elo:teamA.elo;
+    const winnerElo=res.winner.elo;
+    const isUpset=winnerElo<loserElo&&(loserElo-winnerElo)>=80;
     let qual=res.pso
       ?`<span style="color:var(--gray);font-size:9px;">${res.penA}-${res.penB} PSO</span>`
       :res.aet
       ?`<span style="color:var(--gray);font-size:9px;">AET</span>`
       :'';
-    foot=`<div class="match-footer">${qual}<span class="match-winner-tag">⚡ ${res.winner.name}</span></div>`;
+    const upsetBadge=isUpset?`<span class="upset-tag">😱 UPSET</span>`:'';
+    foot=`<div class="match-footer" style="flex-wrap:wrap;gap:4px;">${qual}${upsetBadge}<span class="match-winner-tag" style="margin-left:auto;">⚡ ${res.winner.name}</span></div>`;
   }
   return `<div class="match-card ${done?'done':''}">
     <div class="match-head">${label} · MATCH ${num}</div>
@@ -1955,20 +1986,30 @@ function openFinalModal(){
 
 function showChampion(result,finalist1,finalist2){
   const champ=result.winner;
-  const ftStr=result.pso?`FT ${result.ga}-${result.gb} · PSO ${result.penA}-${result.penB}`:result.aet?`${result.ga}-${result.gb} AET`:`${result.ga}-${result.gb} FT`;
+  const scoreLabel=result.pso
+    ?`${result.ga}–${result.gb} (${result.penA}–${result.penB} PSO)`
+    :result.aet
+    ?`${result.ga}–${result.gb} (AET)`
+    :`${result.ga}–${result.gb}`;
+  const loser=champ.name===finalist1.name?finalist2:finalist1;
   document.getElementById('champBox').innerHTML=`
     <span class="champ-crown">🏆</span>
     <div class="champ-pre">FIFA World Cup 2026 Champion</div>
     <div class="champ-flag-wrap">
-      <img class="champ-flag-big" src="${FLAG(champ.flag)}" alt="${champ.name}"/>
+      <img class="champ-flag-big" src="${FLAG(champ.flag)}" alt="${champ.name}" onerror="this.style.opacity='.3'"/>
     </div>
     <div class="champ-name">${champ.name}</div>
-    <div class="champ-score-line">Final · ${finalist1.name} ${result.ga}–${result.gb} ${finalist2.name}${result.pso?` (${result.penA}-${result.penB} PSO)`:result.aet?' (AET)':''}</div>
+    <div class="champ-score-line">
+      🏟 FINAL &nbsp;·&nbsp; ${finalist1.name} ${scoreLabel} ${finalist2.name}
+    </div>
+    <div style="font-size:11px;color:var(--gray);margin-top:8px;letter-spacing:1px;">
+      Defeated ${loser.name} · ELO ${champ.elo}
+    </div>
     <div class="champ-buttons">
       <button class="champ-btn primary" onclick="resetAndSimulate()">🔄 SIMULATE AGAIN</button>
       <button class="champ-btn secondary" onclick="document.getElementById('champModal').classList.remove('open')">✕ CLOSE</button>
     </div>`;
-  launchConfetti(200);
+  launchConfetti(220);
 }
 
 function resetAndSimulate(){
