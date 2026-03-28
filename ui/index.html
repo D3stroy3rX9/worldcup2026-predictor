@@ -729,6 +729,125 @@
     .sim-pts { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
     .sim-gd  { font-size:11px; color:var(--gray); width:32px; text-align:right; }
 
+    /* ── KNOCKOUT ROUNDS ── */
+    .ko-section {
+      margin-top: 44px;
+      display: none;
+    }
+    .ko-section.visible {
+      display: block;
+      animation: koSlideIn .55s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes koSlideIn {
+      from { opacity:0; transform:translateY(36px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .ko-round-header {
+      display:flex; align-items:center; gap:16px;
+      margin-bottom:20px; padding-bottom:14px;
+      border-bottom:2px solid var(--border);
+    }
+    .ko-round-badge {
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      color:var(--black); font-family:'Bebas Neue',sans-serif;
+      font-size:11px; letter-spacing:2px; padding:4px 12px;
+      border-radius:6px; white-space:nowrap; font-weight:900;
+    }
+    .ko-round-title {
+      font-family:'Bebas Neue',sans-serif; font-size:34px;
+      letter-spacing:4px; color:var(--white); line-height:1;
+    }
+    .ko-round-count { font-size:11px; color:var(--gray); letter-spacing:1px; margin-top:2px; }
+    .matches-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+    .match-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:var(--radius); overflow:hidden; transition:border-color .3s, box-shadow .3s;
+    }
+    .match-card.done { border-color:rgba(244,123,32,.3); }
+    .match-card.done:hover { box-shadow:0 4px 20px rgba(244,123,32,.15); }
+    .match-head {
+      background:rgba(255,255,255,.03); padding:6px 12px;
+      font-size:9px; color:var(--gray); letter-spacing:1.5px;
+      font-weight:700; text-transform:uppercase;
+      border-bottom:1px solid var(--border);
+    }
+    .match-team {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.04);
+      transition:background .2s, border-left .2s;
+    }
+    .match-team.winner { background:rgba(244,123,32,.12); border-left:3px solid var(--orange); }
+    .match-team.loser  { opacity:.45; }
+    .match-flag { width:28px; height:20px; object-fit:cover; border-radius:3px; flex-shrink:0; }
+    .match-name { flex:1; font-size:12px; font-weight:600; }
+    .match-name.wn { color:var(--white); font-weight:700; }
+    .match-score {
+      font-family:'Bebas Neue',sans-serif; font-size:24px;
+      color:var(--gray2); min-width:18px; text-align:center; transition:color .3s;
+    }
+    .match-team.winner .match-score { color:var(--orange); }
+    .match-footer {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:5px 14px; font-size:10px; color:var(--gray);
+    }
+    .match-winner-tag { color:var(--orange); font-weight:700; font-size:9px; letter-spacing:.8px; }
+    /* Advance/proceed buttons */
+    .advance-wrap { margin-top:28px; display:none; justify-content:center; }
+    .advance-wrap.show { display:flex; animation:fadeInUp .4s ease; }
+    .advance-btn {
+      padding:15px 44px;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      border:none; border-radius:10px; color:var(--black);
+      font-family:'Bebas Neue',sans-serif; font-size:21px;
+      letter-spacing:3px; cursor:pointer; font-weight:900;
+      transition:all .25s; box-shadow:0 6px 24px rgba(244,123,32,.45);
+    }
+    .advance-btn:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(244,123,32,.7); }
+    .advance-btn.gold {
+      background:linear-gradient(135deg,var(--gold2),var(--gold));
+      color:#1a0a00; box-shadow:0 6px 24px rgba(245,197,24,.5);
+      font-size:23px;
+    }
+    .advance-btn.gold:hover { box-shadow:0 12px 36px rgba(245,197,24,.8); }
+
+    /* ── CHAMPION MODAL ── */
+    #champModal {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(0,0,0,.94); backdrop-filter:blur(12px);
+      display:none; align-items:center; justify-content:center; overflow:hidden;
+    }
+    #champModal.open { display:flex; }
+    .champ-box {
+      text-align:center; position:relative; z-index:10;
+      padding:24px 20px; max-width:560px; width:92%;
+    }
+    .champ-crown { font-size:56px; display:block; margin-bottom:4px; opacity:0; animation:crownDrop .7s cubic-bezier(.34,1.56,.64,1) .5s forwards; }
+    @keyframes crownDrop { from{opacity:0;transform:translateY(-40px) scale(1.6)}to{opacity:1;transform:translateY(0) scale(1)} }
+    .champ-pre { font-size:11px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; margin-bottom:14px; opacity:0; animation:fadeInUp .5s ease .2s forwards; }
+    .champ-flag-wrap { margin:0 auto 12px; display:inline-block; opacity:0; animation:flagBurst .7s cubic-bezier(.34,1.56,.64,1) .65s forwards; }
+    @keyframes flagBurst { from{opacity:0;transform:scale(0.3) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)} }
+    .champ-flag-big { width:148px; height:104px; object-fit:cover; border-radius:10px; box-shadow:0 0 70px rgba(245,197,24,.9),0 0 140px rgba(245,197,24,.4); }
+    .champ-name {
+      font-family:'Bebas Neue',sans-serif; font-size:clamp(46px,12vw,90px);
+      letter-spacing:4px; color:var(--white); line-height:1;
+      text-shadow:0 0 60px rgba(244,123,32,.9),0 0 120px rgba(244,123,32,.4);
+      opacity:0; animation:fadeInUp .6s ease .85s forwards;
+    }
+    .champ-score-line { font-size:13px; color:var(--gold); letter-spacing:2px; margin-top:10px; opacity:0; animation:fadeInUp .5s ease 1.1s forwards; }
+    .champ-buttons { display:flex; gap:12px; justify-content:center; margin-top:24px; opacity:0; animation:fadeInUp .5s ease 1.35s forwards; flex-wrap:wrap; }
+    .champ-btn { padding:11px 28px; border-radius:8px; font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; cursor:pointer; transition:all .2s; }
+    .champ-btn.primary { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border:none; color:var(--black); }
+    .champ-btn.secondary { background:transparent; border:1px solid rgba(255,255,255,.2); color:var(--white); }
+    .champ-btn:hover { transform:translateY(-2px); }
+    /* Countdown */
+    .countdown-box { text-align:center; padding:20px 0; }
+    .countdown-label { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:3px; color:var(--orange); margin-bottom:16px; }
+    .countdown-num { font-family:'Bebas Neue',sans-serif; font-size:130px; color:var(--white); text-shadow:0 0 50px rgba(244,123,32,.9); animation:countPulse .9s ease; line-height:1; }
+    @keyframes countPulse { 0%{transform:scale(2);opacity:0} 40%{opacity:1} 100%{transform:scale(1);opacity:1} }
+    /* Confetti */
+    .confetti-piece { position:fixed; border-radius:2px; top:-20px; animation:confettiFall linear forwards; z-index:501; pointer-events:none; }
+    @keyframes confettiFall { to{transform:translateY(110vh) rotate(720deg) skewX(10deg);opacity:0} }
+
     /* ── TEAM MODAL ── */
     .modal-overlay {
       position: fixed;
@@ -1063,16 +1182,82 @@
 
   <!-- SIMULATOR -->
   <section id="simulator" class="section">
-    <div class="section-title">GROUP STAGE SIMULATOR</div>
+    <div class="section-title">TOURNAMENT SIMULATOR</div>
     <div class="sim-controls">
       <button class="sim-btn" onclick="runSimulation()">▶ SIMULATE ALL GROUPS</button>
-      <span style="color:var(--gray);font-size:12px;">ELO-based Monte Carlo simulation across all 12 groups</span>
+      <span style="color:var(--gray);font-size:12px;">ELO-based Monte Carlo · 48 teams · all 12 groups</span>
     </div>
     <div class="sim-results" id="simResults">
       <div style="color:var(--gray);font-size:13px;grid-column:1/-1;padding:20px 0;">
-        Click "Simulate All Groups" to run the group stage prediction.
+        Click "Simulate All Groups" to begin — then advance through every knockout round to the Final.
       </div>
     </div>
+
+    <!-- Advance to knockouts -->
+    <div class="advance-wrap" id="advanceToKoWrap">
+      <button class="advance-btn" onclick="proceedToR32()">⚡ ADVANCE TO KNOCKOUTS →</button>
+    </div>
+
+    <!-- ROUND OF 32 -->
+    <div class="ko-section" id="r32Section">
+      <div class="ko-round-header">
+        <div class="ko-round-badge">WC 2026</div>
+        <div>
+          <div class="ko-round-title">ROUND OF 32</div>
+          <div class="ko-round-count">32 teams · 16 matches</div>
+        </div>
+      </div>
+      <div class="matches-grid" id="r32Grid"></div>
+      <div class="advance-wrap" id="advanceToR16Wrap">
+        <button class="advance-btn" onclick="proceedToR16()">⚡ PROCEED TO ROUND OF 16 →</button>
+      </div>
+    </div>
+
+    <!-- ROUND OF 16 -->
+    <div class="ko-section" id="r16Section">
+      <div class="ko-round-header">
+        <div class="ko-round-badge">WC 2026</div>
+        <div>
+          <div class="ko-round-title">ROUND OF 16</div>
+          <div class="ko-round-count">16 teams · 8 matches</div>
+        </div>
+      </div>
+      <div class="matches-grid" id="r16Grid"></div>
+      <div class="advance-wrap" id="advanceToQfWrap">
+        <button class="advance-btn" onclick="proceedToQF()">⚡ PROCEED TO QUARTER-FINALS →</button>
+      </div>
+    </div>
+
+    <!-- QUARTER-FINALS -->
+    <div class="ko-section" id="qfSection">
+      <div class="ko-round-header">
+        <div class="ko-round-badge">WC 2026</div>
+        <div>
+          <div class="ko-round-title">QUARTER-FINALS</div>
+          <div class="ko-round-count">8 teams · 4 matches</div>
+        </div>
+      </div>
+      <div class="matches-grid" id="qfGrid"></div>
+      <div class="advance-wrap" id="advanceToSfWrap">
+        <button class="advance-btn" onclick="proceedToSF()">⚡ PROCEED TO SEMI-FINALS →</button>
+      </div>
+    </div>
+
+    <!-- SEMI-FINALS -->
+    <div class="ko-section" id="sfSection">
+      <div class="ko-round-header">
+        <div class="ko-round-badge">WC 2026</div>
+        <div>
+          <div class="ko-round-title">SEMI-FINALS</div>
+          <div class="ko-round-count">4 teams · 2 matches</div>
+        </div>
+      </div>
+      <div class="matches-grid" id="sfGrid"></div>
+      <div class="advance-wrap" id="advanceToFinalWrap">
+        <button class="advance-btn gold" onclick="openFinalModal()">🏆 SIMULATE THE FINAL</button>
+      </div>
+    </div>
+
   </section>
 </div>
 
@@ -1112,6 +1297,11 @@
       <button class="predict-from-modal" id="modalPredictBtn">⚡ PREDICT WITH THIS TEAM</button>
     </div>
   </div>
+</div>
+
+<!-- CHAMPION MODAL -->
+<div id="champModal">
+  <div class="champ-box" id="champBox"></div>
 </div>
 
 <!-- FOOTER -->
@@ -1536,11 +1726,28 @@ function simulateGroup(teams){
   return s;
 }
 
+// ── TOURNAMENT STATE ──
+let simQualifiers = null;
+let r32Bracket=[], r16Bracket=[], qfBracket=[], sfBracket=[];
+let r32Results=[], r16Results=[], qfResults=[], sfResults=[];
+
 function runSimulation(){
+  // Reset all knockout state
+  simQualifiers={};
+  r32Bracket=[];r16Bracket=[];qfBracket=[];sfBracket=[];
+  r32Results=[];r16Results=[];qfResults=[];sfResults=[];
+  ['r32Section','r16Section','qfSection','sfSection'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.remove('visible');
+  });
+  ['advanceToKoWrap','advanceToR16Wrap','advanceToQfWrap','advanceToSfWrap','advanceToFinalWrap'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.remove('show');
+  });
+
   const container=document.getElementById('simResults');
   container.innerHTML='';
   for(const [letter,teams] of Object.entries(GROUPS)){
     const result=simulateGroup(flatTeams(teams));
+    simQualifiers[letter]=result;
     const card=document.createElement('div');
     card.className='sim-group-card';
     card.innerHTML=`
@@ -1558,6 +1765,226 @@ function runSimulation(){
         </div>`).join('')}
       <div class="accent-bar"></div>`;
     container.appendChild(card);
+  }
+  // Show advance button
+  const adv=document.getElementById('advanceToKoWrap');
+  adv.classList.add('show');
+  setTimeout(()=>adv.scrollIntoView({behavior:'smooth',block:'nearest'}),200);
+}
+
+// ── KNOCKOUT ENGINE ──
+function simulateKnockout(teamA, teamB){
+  const {lambdaA,lambdaB}=expectedGoals(teamA.elo,teamB.elo,true);
+  let ga=poissonRand(lambdaA), gb=poissonRand(lambdaB);
+  let aet=false, pso=false, penA=0, penB=0;
+  if(ga===gb){
+    // Extra time (~30 min = 25% of 90)
+    ga+=poissonRand(lambdaA*0.25);
+    gb+=poissonRand(lambdaB*0.25);
+    aet=true;
+    if(ga===gb){
+      pso=true;
+      const pW=eloProbs(teamA.elo,teamB.elo).win;
+      const aWins=Math.random()<pW;
+      const ws=4+Math.floor(Math.random()*2);
+      const ls=Math.max(0,ws-1-Math.floor(Math.random()*2));
+      penA=aWins?ws:ls; penB=aWins?ls:ws;
+    }
+  }
+  const winner=pso?(penA>penB?teamA:teamB):(ga>gb?teamA:teamB);
+  return {teamA,teamB,ga,gb,aet,pso,penA,penB,winner};
+}
+
+function matchCardHtml(teamA, teamB, res, label, num){
+  const done=!!res;
+  const aWin=done&&res.winner.name===teamA.name;
+  const bWin=done&&!aWin;
+  let foot='';
+  if(done){
+    let qual=res.pso
+      ?`<span style="color:var(--gray);font-size:9px;">${res.penA}-${res.penB} PSO</span>`
+      :res.aet
+      ?`<span style="color:var(--gray);font-size:9px;">AET</span>`
+      :'';
+    foot=`<div class="match-footer">${qual}<span class="match-winner-tag">⚡ ${res.winner.name}</span></div>`;
+  }
+  return `<div class="match-card ${done?'done':''}">
+    <div class="match-head">${label} · MATCH ${num}</div>
+    <div class="match-team ${aWin?'winner':bWin?'loser':''}">
+      <img class="match-flag" src="${FLAG(teamA.flag)}" onerror="this.style.opacity='.2'"/>
+      <span class="match-name ${aWin?'wn':''}">${teamA.name}</span>
+      <span class="match-score">${done?res.ga:'—'}</span>
+    </div>
+    <div class="match-team ${bWin?'winner':aWin?'loser':''}">
+      <img class="match-flag" src="${FLAG(teamB.flag)}" onerror="this.style.opacity='.2'"/>
+      <span class="match-name ${bWin?'wn':''}">${teamB.name}</span>
+      <span class="match-score">${done?res.gb:'—'}</span>
+    </div>
+    ${foot}
+  </div>`;
+}
+
+function revealRound(bracket, results, grid, label){
+  // Stagger-reveal each match result
+  results.forEach((res,i)=>{
+    setTimeout(()=>{
+      grid.innerHTML=bracket.map(([a,b],j)=>matchCardHtml(a,b,results[j]||null,label,j+1)).join('');
+    }, i*90);
+  });
+}
+
+function runRound(bracket, grid, label, nextWrapId, storeArr){
+  // Show empty cards first
+  grid.innerHTML=bracket.map(([a,b],i)=>matchCardHtml(a,b,null,label,i+1)).join('');
+  setTimeout(()=>{
+    // Simulate all
+    const results=bracket.map(([a,b])=>simulateKnockout(a,b));
+    storeArr.splice(0,storeArr.length,...results);
+    revealRound(bracket,results,grid,label);
+    // Show proceed button after reveal finishes
+    setTimeout(()=>{
+      const wrap=document.getElementById(nextWrapId);
+      if(wrap){ wrap.classList.add('show'); setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'nearest'}),100); }
+    }, bracket.length*90+400);
+  }, 300);
+}
+
+function buildR32Bracket(){
+  const L=['A','B','C','D','E','F','G','H','I','J','K','L'];
+  const wins=L.map(l=>simQualifiers[l][0]);
+  const runs=L.map(l=>simQualifiers[l][1]);
+  const thirds=L.map(l=>({...simQualifiers[l][2]}))
+    .sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).slice(0,8);
+  return [
+    [wins[0], runs[1]],    // 1A vs 2B
+    [wins[2], runs[3]],    // 1C vs 2D
+    [wins[4], runs[5]],    // 1E vs 2F
+    [wins[6], runs[7]],    // 1G vs 2H
+    [wins[8], runs[9]],    // 1I vs 2J
+    [wins[10],runs[11]],   // 1K vs 2L
+    [wins[1], thirds[0]],  // 1B vs best 3rd
+    [wins[3], thirds[1]],  // 1D vs 2nd 3rd
+    [wins[5], thirds[2]],  // 1F vs 3rd 3rd
+    [wins[7], thirds[3]],  // 1H vs 4th 3rd
+    [wins[9], thirds[4]],  // 1J vs 5th 3rd
+    [wins[11],thirds[5]],  // 1L vs 6th 3rd
+    [runs[0], thirds[6]],  // 2A vs 7th 3rd
+    [runs[2], thirds[7]],  // 2C vs 8th 3rd
+    [runs[4], runs[6]],    // 2E vs 2G
+    [runs[8], runs[10]],   // 2I vs 2K
+  ];
+}
+
+function buildNextBracket(prevResults){
+  const winners=prevResults.map(r=>r.winner);
+  const bracket=[];
+  for(let i=0;i<winners.length;i+=2) bracket.push([winners[i],winners[i+1]]);
+  return bracket;
+}
+
+// ── PROCEED FUNCTIONS ──
+function proceedToR32(){
+  r32Bracket=buildR32Bracket();
+  const sec=document.getElementById('r32Section');
+  sec.classList.add('visible');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  runRound(r32Bracket,document.getElementById('r32Grid'),'R32','advanceToR16Wrap',r32Results);
+}
+
+function proceedToR16(){
+  r16Bracket=buildNextBracket(r32Results);
+  const sec=document.getElementById('r16Section');
+  sec.classList.add('visible');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  runRound(r16Bracket,document.getElementById('r16Grid'),'R16','advanceToQfWrap',r16Results);
+}
+
+function proceedToQF(){
+  qfBracket=buildNextBracket(r16Results);
+  const sec=document.getElementById('qfSection');
+  sec.classList.add('visible');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  runRound(qfBracket,document.getElementById('qfGrid'),'QF','advanceToSfWrap',qfResults);
+}
+
+function proceedToSF(){
+  sfBracket=buildNextBracket(qfResults);
+  const sec=document.getElementById('sfSection');
+  sec.classList.add('visible');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  runRound(sfBracket,document.getElementById('sfGrid'),'SF','advanceToFinalWrap',sfResults);
+}
+
+// ── FINAL ──
+function openFinalModal(){
+  const finalist1=sfResults[0].winner, finalist2=sfResults[1].winner;
+  const modal=document.getElementById('champModal');
+  const box=document.getElementById('champBox');
+  modal.classList.add('open');
+  box.innerHTML=`<div class="countdown-box">
+    <div style="display:flex;gap:28px;justify-content:center;align-items:center;margin-bottom:28px;">
+      <div style="text-align:center">
+        <img style="width:72px;height:50px;object-fit:cover;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)" src="${FLAG(finalist1.flag)}"/>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;margin-top:8px;letter-spacing:1px;">${finalist1.name}</div>
+        <div style="font-size:10px;color:var(--gray);">ELO ${finalist1.elo}</div>
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--orange);letter-spacing:3px;">VS</div>
+      <div style="text-align:center">
+        <img style="width:72px;height:50px;object-fit:cover;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)" src="${FLAG(finalist2.flag)}"/>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;margin-top:8px;letter-spacing:1px;">${finalist2.name}</div>
+        <div style="font-size:10px;color:var(--gray);">ELO ${finalist2.elo}</div>
+      </div>
+    </div>
+    <div class="countdown-label">SIMULATING THE FINAL…</div>
+    <div class="countdown-num" id="cdNum">3</div>
+  </div>`;
+  let count=3;
+  const tick=()=>{
+    count--;
+    if(count>0){
+      const el=document.getElementById('cdNum');
+      if(el){ el.textContent=count; el.style.animation='none'; void el.offsetWidth; el.style.animation='countPulse .9s ease'; }
+      setTimeout(tick,1000);
+    } else {
+      const result=simulateKnockout(finalist1,finalist2);
+      showChampion(result,finalist1,finalist2);
+    }
+  };
+  setTimeout(tick,1000);
+}
+
+function showChampion(result,finalist1,finalist2){
+  const champ=result.winner;
+  const ftStr=result.pso?`FT ${result.ga}-${result.gb} · PSO ${result.penA}-${result.penB}`:result.aet?`${result.ga}-${result.gb} AET`:`${result.ga}-${result.gb} FT`;
+  document.getElementById('champBox').innerHTML=`
+    <span class="champ-crown">🏆</span>
+    <div class="champ-pre">FIFA World Cup 2026 Champion</div>
+    <div class="champ-flag-wrap">
+      <img class="champ-flag-big" src="${FLAG(champ.flag)}" alt="${champ.name}"/>
+    </div>
+    <div class="champ-name">${champ.name}</div>
+    <div class="champ-score-line">Final · ${finalist1.name} ${result.ga}–${result.gb} ${finalist2.name}${result.pso?` (${result.penA}-${result.penB} PSO)`:result.aet?' (AET)':''}</div>
+    <div class="champ-buttons">
+      <button class="champ-btn primary" onclick="resetAndSimulate()">🔄 SIMULATE AGAIN</button>
+      <button class="champ-btn secondary" onclick="document.getElementById('champModal').classList.remove('open')">✕ CLOSE</button>
+    </div>`;
+  launchConfetti(200);
+}
+
+function resetAndSimulate(){
+  document.getElementById('champModal').classList.remove('open');
+  setTimeout(()=>{ runSimulation(); window.scrollTo({top:document.getElementById('simulator').offsetTop-80,behavior:'smooth'}); },150);
+}
+
+function launchConfetti(n=150){
+  const cols=['#F47B20','#009A44','#0057A8','#EF3340','#F5C518','#FFFFFF','#FFD84D','#FF6B35','#C8FF00'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    const sz=6+Math.random()*8;
+    el.style.cssText=`left:${Math.random()*100}vw;width:${sz}px;height:${sz*1.5}px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${2.5+Math.random()*3}s;animation-delay:${Math.random()*1.5}s;transform:rotate(${Math.random()*360}deg);border-radius:${Math.random()>.5?'50%':'2px'};`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
   }
 }
 
