@@ -62,8 +62,8 @@
     }
 
     .header-logo {
-      width: 50px;
-      height: 50px;
+      width: 58px;
+      height: 58px;
       object-fit: contain;
       filter: drop-shadow(0 0 12px rgba(244,123,32,0.7));
     }
@@ -1101,8 +1101,8 @@
   .picker-team-name { flex:1; font-size:13px; font-weight:600; }
   .picker-team-elo { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
   .rank-hint { font-size:10px; color:var(--gray); text-align:center; margin:10px 0 20px; letter-spacing:.5px; }
-  nav button.bracket-nav-btn { border-color:rgba(244,123,32,.4); color:var(--orange); font-weight:800; }
-  nav button.bracket-nav-btn:hover, nav button.bracket-nav-btn.active { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border-color:var(--orange); color:var(--black); }
+  nav button.bracket-nav-btn { border-color:rgba(244,123,32,.22); color:var(--gray); font-weight:800; }
+  nav button.bracket-nav-btn:hover, nav button.bracket-nav-btn.active { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border-color:var(--orange); color:var(--black); box-shadow:0 0 20px rgba(244,123,32,0.5); }
 
   /* Knockout picker */
   .ko-bracket { display:flex; flex-direction:column; gap:32px; }
@@ -2645,14 +2645,24 @@ function bp_download() {
   hGrad.addColorStop(0,'rgba(244,123,32,0.12)'); hGrad.addColorStop(1,'rgba(8,4,0,0)');
   ctx.fillStyle=hGrad; ctx.fillRect(0,7,W,115);
 
-  // ── Header text ──
-  ctx.textAlign='center';
-  ctx.fillStyle='#FFFFFF'; ctx.font='800 58px "Bebas Neue",sans-serif';
+  // ── Header: logo + title as a centred group ──
+  const logoEl = document.querySelector('.header-logo');
+  const logoSize = 82;
+  ctx.font='800 58px "Bebas Neue",sans-serif';
+  const titleW = ctx.measureText('FIFA WORLD CUP 2026').width;
+  const hGroupW = logoSize + 18 + titleW;
+  const hStartX = (W - hGroupW) / 2;
+
+  if (logoEl && logoEl.complete) {
+    ctx.drawImage(logoEl, hStartX, 14, logoSize, logoSize);
+  }
+  ctx.fillStyle='#FFFFFF';
+  ctx.textAlign='left';
   ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=12;
-  ctx.fillText('FIFA WORLD CUP 2026', W/2, 76);
+  ctx.fillText('FIFA WORLD CUP 2026', hStartX + logoSize + 18, 74);
   ctx.shadowBlur=0;
   ctx.fillStyle='#F47B20'; ctx.font='500 20px Inter,sans-serif';
-  ctx.fillText('MY BRACKET PREDICTION', W/2, 104);
+  ctx.fillText('MY BRACKET PREDICTION', hStartX + logoSize + 18, 102);
   const divG = ctx.createLinearGradient(PAD,0,W-PAD,0);
   divG.addColorStop(0,'transparent'); divG.addColorStop(0.15,'#F47B20');
   divG.addColorStop(0.85,'#F47B20'); divG.addColorStop(1,'transparent');
@@ -2746,52 +2756,38 @@ function bp_download() {
   // ══ CHAMPION BANNER ══
   const bannerH = H - cy - 60;
   const cbx=PAD+30, cby=cy+18, cbw=CW-60, cbh=bannerH-30;
-  const confClr=['#F5C518','#F47B20','#009A44','#0057A8','#EF3340','#FFFFFF'];
 
-  // 1. Draw box background first
+  // Champion box — clean, no confetti
   const cbBg=ctx.createLinearGradient(cbx,cby,cbx+cbw,cby+cbh);
-  cbBg.addColorStop(0,'rgba(245,197,24,0.20)'); cbBg.addColorStop(1,'rgba(244,123,32,0.12)');
-  roundRect(cbx,cby,cbw,cbh,14,cbBg,'rgba(245,197,24,0.6)');
-
-  // 2. Confetti INSIDE box (clipped to box bounds) — evenly distributed
-  ctx.save();
-  ctx.beginPath(); ctx.roundRect(cbx+2,cby+2,cbw-4,cbh-4,12); ctx.clip();
-  for (let d=0;d<110;d++) {
-    // Use distinct seed multipliers to get good x/y spread
-    const cx2=cbx+(pseudo(d*13+5)*cbw);
-    const cy2=cby+(pseudo(d*17+3)*cbh);
-    const r=2+pseudo(d*7)*5;
-    ctx.globalAlpha=0.5+pseudo(d*31)*0.3;
-    ctx.fillStyle=confClr[d%confClr.length];
-    const shape=d%4;
-    ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(pseudo(d*11)*Math.PI*2);
-    if (shape===0)      { ctx.fillRect(-r/2,-r*2,r,r*4); }          // tall strip
-    else if (shape===1) { ctx.fillRect(-r*2,-r/2,r*4,r); }          // wide strip
-    else if (shape===2) { ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); } // dot
-    else                { ctx.fillRect(-r,-r,r*2,r*2); }            // square
-    ctx.restore();
-    ctx.globalAlpha=1;
-  }
-  ctx.restore(); // remove clip
-
-  // 3. Inner glow ring on top of confetti
-  ctx.shadowColor='rgba(245,197,24,0.45)'; ctx.shadowBlur=28;
-  ctx.strokeStyle='rgba(245,197,24,0.3)'; ctx.lineWidth=1.5;
+  cbBg.addColorStop(0,'rgba(245,197,24,0.18)'); cbBg.addColorStop(1,'rgba(200,120,10,0.10)');
+  roundRect(cbx,cby,cbw,cbh,14,cbBg,null);
+  // Outer border
+  ctx.strokeStyle='rgba(245,197,24,0.55)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.roundRect(cbx,cby,cbw,cbh,14); ctx.stroke();
+  // Inner subtle border
+  ctx.strokeStyle='rgba(245,197,24,0.18)'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.roundRect(cbx+6,cby+6,cbw-12,cbh-12,10); ctx.stroke();
-  ctx.shadowBlur=0;
-
-  // 4. Text on top of everything
+  // Subtle radial glow behind text
+  const radGlow=ctx.createRadialGradient(W/2,cby+cbh*0.5,0,W/2,cby+cbh*0.5,cbw*0.45);
+  radGlow.addColorStop(0,'rgba(245,197,24,0.12)'); radGlow.addColorStop(1,'rgba(245,197,24,0)');
+  ctx.fillStyle=radGlow; ctx.beginPath(); ctx.roundRect(cbx+2,cby+2,cbw-4,cbh-4,12); ctx.fill();
+  // Label
   ctx.textAlign='center';
-  ctx.fillStyle='rgba(200,165,95,0.95)'; ctx.font='600 14px Inter,sans-serif';
-  ctx.fillText('FIFA WORLD CUP 2026  ·  MY CHAMPION', W/2, cby+36);
+  ctx.fillStyle='rgba(200,165,95,0.9)'; ctx.font='600 13px Inter,sans-serif';
+  ctx.fillText('FIFA WORLD CUP 2026  ·  MY CHAMPION', W/2, cby+34);
+  // Thin gold line under label
+  ctx.strokeStyle='rgba(245,197,24,0.2)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(cbx+40,cby+44); ctx.lineTo(cbx+cbw-40,cby+44); ctx.stroke();
+  // Champion name
   ctx.fillStyle='#F5C518';
-  ctx.shadowColor='rgba(245,197,24,0.8)'; ctx.shadowBlur=32;
-  const champFontSize=cbh>120?72:52;
+  ctx.shadowColor='rgba(245,197,24,0.7)'; ctx.shadowBlur=36;
+  const champFontSize=cbh>120?70:52;
   ctx.font=`800 ${champFontSize}px "Bebas Neue",sans-serif`;
-  ctx.fillText(c.name.toUpperCase(), W/2, cby+cbh/2+champFontSize*0.35);
+  ctx.fillText(c.name.toUpperCase(), W/2, cby+cbh/2+champFontSize*0.33);
   ctx.shadowBlur=0;
-  ctx.font=`${Math.min(34,cbh*0.18)}px Inter,sans-serif`;
-  ctx.fillText('🏆  🌟  🏆', W/2, cby+cbh-22);
+  // Trophies
+  ctx.font=`${Math.min(32,cbh*0.17)}px Inter,sans-serif`;
+  ctx.fillText('🏆  🌟  🏆', W/2, cby+cbh-20);
 
   // ── Footer ──
   ctx.textAlign='center'; ctx.fillStyle='#4A3820';
