@@ -1086,10 +1086,13 @@
   .picker-group-header { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
   .picker-group-header span { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:var(--black); }
   .picker-group-header em { font-size:10px; font-weight:700; letter-spacing:2px; color:rgba(0,0,0,.6); font-style:normal; }
-  .picker-team-row { display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s; user-select:none; }
+  .picker-team-row { display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:grab; border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s,opacity .15s; user-select:none; }
   .picker-team-row:last-child { border-bottom:none; }
-  .picker-team-row:hover { background:rgba(244,123,32,.1); }
-  .picker-rank-badge { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; transition:all .2s; }
+  .picker-team-row:hover { background:rgba(244,123,32,.08); }
+  .picker-team-row.dragging { opacity:.35; cursor:grabbing; }
+  .picker-team-row.drag-over { background:rgba(244,123,32,.2); border-top:2px solid var(--orange); }
+  .drag-handle { color:var(--gray2); font-size:15px; flex-shrink:0; cursor:grab; line-height:1; letter-spacing:-1px; }
+  .picker-rank-badge { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
   .picker-rank-badge.r1 { background:#F5C518; border-color:#F5C518; color:#000; }
   .picker-rank-badge.r2 { background:#aaa; border-color:#aaa; color:#000; }
   .picker-rank-badge.r3 { background:#cd7f32; border-color:#cd7f32; color:#fff; }
@@ -1098,6 +1101,8 @@
   .picker-team-name { flex:1; font-size:13px; font-weight:600; }
   .picker-team-elo { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
   .rank-hint { font-size:10px; color:var(--gray); text-align:center; margin:10px 0 20px; letter-spacing:.5px; }
+  nav button.bracket-nav-btn { border-color:rgba(244,123,32,.4); color:var(--orange); font-weight:800; }
+  nav button.bracket-nav-btn:hover, nav button.bracket-nav-btn.active { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border-color:var(--orange); color:var(--black); }
 
   /* Knockout picker */
   .ko-bracket { display:flex; flex-direction:column; gap:32px; }
@@ -1162,7 +1167,7 @@
     <button class="active" onclick="showSection('groups',this)">Groups</button>
     <button onclick="showSection('predictor',this)">Predictor</button>
     <button onclick="showSection('simulator',this)">Simulator</button>
-    <button onclick="showSection('myBracket',this)" style="background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-color:var(--orange);color:var(--black);font-weight:800;">🏆 MY BRACKET</button>
+    <button class="bracket-nav-btn" onclick="showSection('myBracket',this)">🏆 MY BRACKET</button>
     <a href="https://github.com/D3stroy3rX9/worldcup2026-predictor" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:7px;color:var(--white);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;opacity:.7;transition:opacity .2s;margin-left:8px;padding:6px 12px;border:1px solid rgba(255,255,255,.15);border-radius:8px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub
@@ -1387,7 +1392,7 @@
 
     <!-- ── STAGE 1: GROUP PICKER ── -->
     <div id="bs-groups" class="fade-in">
-      <p class="rank-hint">Click a team to cycle their rank: 🥇 → 🥈 → 🥉 → 4️⃣ — set all 4 per group, then continue.</p>
+      <p class="rank-hint">Drag teams up/down within each group to set your finishing order — 1st and 2nd advance.</p>
       <div class="picker-groups-grid" id="pickerGroupsGrid"></div>
       <div class="bracket-btn-row">
         <span class="bracket-progress" id="groupPickProgress">0 / 12 groups complete</span>
@@ -2205,16 +2210,8 @@ function launchConfetti(n=150){
 }
 
 // ── NAV ──
-function showSection(id,btn){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(id==='myBracket' && !bp_state.rendered) bp_renderGroupPicker();
-}
-
 // ════════════════════════════════════════════════════════════════
-// ██████  R A C K E T   P I C K E R
+// ██████  B R A C K E T   P I C K E R
 // ════════════════════════════════════════════════════════════════
 
 const bp_state = {
@@ -2248,15 +2245,18 @@ function bp_renderGroupPicker() {
 
   for (const [letter, rawTeams] of Object.entries(GROUPS)) {
     const teams = rawTeams.map(bp_resolveTeam);
-    bp_state.groups[letter] = teams.map(t => ({ ...t, rank: null }));
+    // Pre-sort by ELO descending; rank = position
+    const sorted = [...teams].sort((a, b) => b.elo - a.elo);
+    bp_state.groups[letter] = sorted.map((t, i) => ({ ...t, rank: i + 1 }));
 
     const card = document.createElement('div');
     card.className = 'picker-group-card';
     card.id = `pgcard-${letter}`;
+    card.style.borderColor = 'rgba(0,154,68,.5)';
     card.innerHTML = `
       <div class="picker-group-header">
         <span>GROUP ${letter}</span>
-        <em id="pgstatus-${letter}">0/4 ranked</em>
+        <em id="pgstatus-${letter}">drag to reorder</em>
       </div>
       <div id="pgteams-${letter}"></div>`;
     grid.appendChild(card);
@@ -2265,62 +2265,67 @@ function bp_renderGroupPicker() {
   bp_updateGroupProgress();
 }
 
+let _bp_dragSrc = null;
+let _bp_dragLetter = null;
+
 function bp_renderGroupTeams(letter) {
   const container = document.getElementById(`pgteams-${letter}`);
   const state = bp_state.groups[letter];
-  // Sort: ranked first by rank, then unranked by ELO
-  const sorted = [...state].sort((a, b) => {
-    if (a.rank && b.rank) return a.rank - b.rank;
-    if (a.rank) return -1;
-    if (b.rank) return 1;
-    return b.elo - a.elo;
-  });
+  const BADGES = ['🥇','🥈','🥉','4️⃣'];
+  const BCLASSES = ['r1','r2','r3','r4'];
 
-  const BADGES = { 1:'🥇', 2:'🥈', 3:'🥉', 4:'4️⃣' };
-  const CLASSES = { 1:'r1', 2:'r2', 3:'r3', 4:'r4' };
-
-  container.innerHTML = sorted.map(t => `
-    <div class="picker-team-row" onclick="bp_cycleRank('${letter}','${t.name}')">
-      <div class="picker-rank-badge ${t.rank ? CLASSES[t.rank] : ''}">
-        ${t.rank ? BADGES[t.rank] : '—'}
-      </div>
+  container.innerHTML = '';
+  state.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'picker-team-row';
+    row.draggable = true;
+    row.dataset.letter = letter;
+    row.dataset.idx = String(i);
+    row.innerHTML = `
+      <span class="drag-handle">⠿⠿</span>
+      <div class="picker-rank-badge ${BCLASSES[i]}">${BADGES[i]}</div>
       <img class="picker-team-flag" src="${FLAG(t.flag)}" onerror="this.style.opacity='.2'"/>
       <div class="picker-team-name">${t.name}</div>
-      <div class="picker-team-elo">${t.elo}</div>
-    </div>`).join('');
-}
+      <div class="picker-team-elo">${t.elo}</div>`;
 
-function bp_cycleRank(letter, teamName) {
-  const state = bp_state.groups[letter];
-  const t = state.find(x => x.name === teamName);
-  if (!t) return;
+    row.addEventListener('dragstart', e => {
+      _bp_dragSrc = row;
+      _bp_dragLetter = letter;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', i);
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (_bp_dragLetter !== letter) return;
+      e.dataTransfer.dropEffect = 'move';
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!_bp_dragSrc || _bp_dragSrc === row || _bp_dragLetter !== letter) return;
+      const fromIdx = parseInt(_bp_dragSrc.dataset.idx);
+      const toIdx = parseInt(row.dataset.idx);
+      const arr = bp_state.groups[letter];
+      const [moved] = arr.splice(fromIdx, 1);
+      arr.splice(toIdx, 0, moved);
+      arr.forEach((t, idx) => t.rank = idx + 1);
+      bp_renderGroupTeams(letter);
+    });
 
-  const prev = t.rank;
-  const nextRank = prev === null ? 1 : prev === 4 ? null : prev + 1;
-
-  // If trying to assign a rank that's already taken, bump the holder off
-  if (nextRank !== null) {
-    const holder = state.find(x => x.name !== teamName && x.rank === nextRank);
-    if (holder) holder.rank = null;
-  }
-  t.rank = nextRank;
-
-  bp_renderGroupTeams(letter);
-  // Update status label
-  const ranked = state.filter(x => x.rank !== null).length;
-  document.getElementById(`pgstatus-${letter}`).textContent = `${ranked}/4 ranked`;
-  const complete = ranked === 4;
-  document.getElementById(`pgcard-${letter}`).style.borderColor =
-    complete ? 'rgba(0,154,68,.5)' : '';
-
-  bp_updateGroupProgress();
+    container.appendChild(row);
+  });
 }
 
 function bp_updateGroupProgress() {
-  const total = Object.keys(bp_state.groups).length; // 12
-  const done = Object.values(bp_state.groups).filter(g => g.filter(t => t.rank !== null).length === 4).length;
-  document.getElementById('groupPickProgress').textContent = `${done} / ${total} groups complete`;
-  document.getElementById('btnToR32').disabled = done < total;
+  document.getElementById('groupPickProgress').textContent = 'All 12 groups ready — reorder to adjust';
+  document.getElementById('btnToR32').disabled = false;
 }
 
 // ── BUILD R32 BRACKET FROM GROUP PICKS ──
