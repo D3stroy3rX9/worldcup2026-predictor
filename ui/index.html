@@ -1069,6 +1069,82 @@
 
     footer .ft-logo { width:60px; object-fit:contain; margin:0 auto 12px; display:block; opacity:.7; }
     footer span { color:var(--orange); }
+
+  /* ── MY BRACKET ── */
+  .bracket-intro { text-align:center; padding:28px 20px 10px; }
+  .bracket-intro p { color:var(--gray); font-size:14px; max-width:560px; margin:8px auto 0; line-height:1.6; }
+  .bracket-steps { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:20px 0 32px; }
+  .bstep { display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 18px; }
+  .bstep-num { width:24px; height:24px; border-radius:50%; background:var(--orange); color:var(--black); font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .bstep-txt { font-size:12px; color:var(--gray); font-weight:600; letter-spacing:.5px; }
+  .bstep.done .bstep-num { background:var(--green); }
+  .bstep.done .bstep-txt { color:var(--white); }
+
+  /* Group picker */
+  .picker-groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+  .picker-group-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .picker-group-header { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
+  .picker-group-header span { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:var(--black); }
+  .picker-group-header em { font-size:10px; font-weight:700; letter-spacing:2px; color:rgba(0,0,0,.6); font-style:normal; }
+  .picker-team-row { display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s; user-select:none; }
+  .picker-team-row:last-child { border-bottom:none; }
+  .picker-team-row:hover { background:rgba(244,123,32,.1); }
+  .picker-rank-badge { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; transition:all .2s; }
+  .picker-rank-badge.r1 { background:#F5C518; border-color:#F5C518; color:#000; }
+  .picker-rank-badge.r2 { background:#aaa; border-color:#aaa; color:#000; }
+  .picker-rank-badge.r3 { background:#cd7f32; border-color:#cd7f32; color:#fff; }
+  .picker-rank-badge.r4 { background:rgba(255,255,255,.08); border-color:var(--border); color:var(--gray); }
+  .picker-team-flag { width:30px; height:21px; object-fit:cover; border-radius:3px; box-shadow:0 1px 4px rgba(0,0,0,.5); flex-shrink:0; }
+  .picker-team-name { flex:1; font-size:13px; font-weight:600; }
+  .picker-team-elo { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
+  .rank-hint { font-size:10px; color:var(--gray); text-align:center; margin:10px 0 20px; letter-spacing:.5px; }
+
+  /* Knockout picker */
+  .ko-bracket { display:flex; flex-direction:column; gap:32px; }
+  .ko-round-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; color:var(--orange); margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+  .ko-round-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--orange) 0%,transparent); }
+  .ko-matches-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+  .ko-match-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .ko-match-label { background:rgba(244,123,32,.12); padding:5px 12px; font-size:10px; font-weight:700; letter-spacing:2px; color:var(--orange); border-bottom:1px solid var(--border); }
+  .ko-team-btn { width:100%; display:flex; align-items:center; gap:10px; padding:11px 14px; cursor:pointer; background:transparent; border:none; border-bottom:1px solid rgba(255,255,255,.05); color:var(--white); text-align:left; transition:background .15s; }
+  .ko-team-btn:last-of-type { border-bottom:none; }
+  .ko-team-btn:hover { background:rgba(244,123,32,.12); }
+  .ko-team-btn.picked { background:rgba(244,123,32,.18); border-left:3px solid var(--orange); }
+  .ko-team-btn.eliminated { opacity:.38; }
+  .ko-team-btn .ko-flag { width:30px; height:21px; object-fit:cover; border-radius:3px; flex-shrink:0; }
+  .ko-team-btn .ko-name { flex:1; font-size:13px; font-weight:600; }
+  .ko-team-btn .ko-check { font-size:16px; width:20px; text-align:right; flex-shrink:0; }
+  .ko-vs { text-align:center; font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--gray); padding:3px 0; background:rgba(255,255,255,.02); border-bottom:1px solid rgba(255,255,255,.04); }
+
+  /* Final champion */
+  .champion-reveal { text-align:center; padding:32px 20px; background:linear-gradient(135deg,rgba(245,197,24,.08),rgba(244,123,32,.08)); border:1px solid rgba(245,197,24,.25); border-radius:16px; margin-top:16px; }
+  .champion-reveal .champ-flag-big { width:120px; height:80px; object-fit:cover; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,.6); margin:16px auto; display:block; }
+  .champion-reveal .champ-name-big { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:4px; color:var(--gold); text-shadow:0 0 40px rgba(245,197,24,.5); }
+  .champion-reveal .champ-subtitle { font-size:12px; color:var(--gray); letter-spacing:3px; text-transform:uppercase; margin-top:4px; }
+
+  /* Bracket CTA buttons */
+  .bracket-btn { background:var(--orange); color:var(--black); border:none; padding:12px 28px; border-radius:8px; font-weight:800; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .2s; box-shadow:0 4px 20px rgba(244,123,32,.4); }
+  .bracket-btn:hover { background:var(--orange-dark); box-shadow:0 6px 28px rgba(244,123,32,.6); transform:translateY(-2px); }
+  .bracket-btn:disabled { opacity:.35; cursor:not-allowed; transform:none; box-shadow:none; }
+  .bracket-btn.secondary { background:transparent; border:1px solid var(--orange); color:var(--orange); box-shadow:none; }
+  .bracket-btn.secondary:hover { background:rgba(244,123,32,.12); }
+  .bracket-btn.green { background:var(--green); box-shadow:0 4px 20px rgba(0,154,68,.4); }
+  .bracket-btn-row { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin:20px 0; }
+  .bracket-progress { font-size:12px; color:var(--gray); letter-spacing:1px; }
+
+  /* Download card */
+  .download-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; text-align:center; margin-top:20px; }
+  .download-card h3 { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px; color:var(--gold); margin-bottom:8px; }
+  .download-card p { font-size:13px; color:var(--gray); margin-bottom:20px; }
+
+  /* Bracket stage nav */
+  .bstage-nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+  .bstage-pill { padding:6px 16px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:1.5px; border:1px solid var(--border); color:var(--gray); background:transparent; cursor:default; }
+  .bstage-pill.active { background:var(--orange); border-color:var(--orange); color:var(--black); }
+  .bstage-pill.done { border-color:var(--green); color:var(--green); }
+
+  @keyframes fadeSlideIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation:fadeSlideIn .35s ease forwards; }
   </style>
 </head>
 <body>
@@ -1086,6 +1162,7 @@
     <button class="active" onclick="showSection('groups',this)">Groups</button>
     <button onclick="showSection('predictor',this)">Predictor</button>
     <button onclick="showSection('simulator',this)">Simulator</button>
+    <button onclick="showSection('myBracket',this)" style="background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-color:var(--orange);color:var(--black);font-weight:800;">🏆 MY BRACKET</button>
     <a href="https://github.com/D3stroy3rX9/worldcup2026-predictor" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:7px;color:var(--white);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;opacity:.7;transition:opacity .2s;margin-left:8px;padding:6px 12px;border:1px solid rgba(255,255,255,.15);border-radius:8px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub
@@ -1289,6 +1366,100 @@
     </div>
 
   </section>
+
+  <!-- MY BRACKET -->
+  <section id="myBracket" class="section">
+    <div class="section-title">🏆 MY BRACKET PREDICTOR</div>
+
+    <div class="bracket-intro">
+      <p>Rank each group, pick your R32 winners, advance through R16, Quarters, Semis and the Final — then download your prediction to share.</p>
+    </div>
+
+    <!-- Stage progress pills -->
+    <div class="bstage-nav" id="bstageNav">
+      <div class="bstage-pill active" id="spill-groups">① Groups</div>
+      <div class="bstage-pill" id="spill-r32">② Round of 32</div>
+      <div class="bstage-pill" id="spill-r16">③ Round of 16</div>
+      <div class="bstage-pill" id="spill-qf">④ Quarter-Finals</div>
+      <div class="bstage-pill" id="spill-sf">⑤ Semi-Finals</div>
+      <div class="bstage-pill" id="spill-final">⑥ Final</div>
+    </div>
+
+    <!-- ── STAGE 1: GROUP PICKER ── -->
+    <div id="bs-groups" class="fade-in">
+      <p class="rank-hint">Click a team to cycle their rank: 🥇 → 🥈 → 🥉 → 4️⃣ — set all 4 per group, then continue.</p>
+      <div class="picker-groups-grid" id="pickerGroupsGrid"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="groupPickProgress">0 / 12 groups complete</span>
+        <button class="bracket-btn" id="btnToR32" onclick="bp_toR32()" disabled>Continue to Round of 32 →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 2: R32 ── -->
+    <div id="bs-r32" style="display:none" class="fade-in">
+      <div class="ko-round-title">ROUND OF 32</div>
+      <div class="ko-matches-grid" id="koGridR32"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="r32Progress">0 / 16 picked</span>
+        <button class="bracket-btn secondary" onclick="bp_backTo('groups','r32')">← Back</button>
+        <button class="bracket-btn" id="btnToR16" onclick="bp_toR16()" disabled>Continue to R16 →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 3: R16 ── -->
+    <div id="bs-r16" style="display:none" class="fade-in">
+      <div class="ko-round-title">ROUND OF 16</div>
+      <div class="ko-matches-grid" id="koGridR16"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="r16Progress">0 / 8 picked</span>
+        <button class="bracket-btn secondary" onclick="bp_backTo('r32','r16')">← Back</button>
+        <button class="bracket-btn" id="btnToQF" onclick="bp_toQF()" disabled>Continue to Quarter-Finals →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 4: QF ── -->
+    <div id="bs-qf" style="display:none" class="fade-in">
+      <div class="ko-round-title">QUARTER-FINALS</div>
+      <div class="ko-matches-grid" id="koGridQF"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="qfProgress">0 / 4 picked</span>
+        <button class="bracket-btn secondary" onclick="bp_backTo('r16','qf')">← Back</button>
+        <button class="bracket-btn" id="btnToSF" onclick="bp_toSF()" disabled>Continue to Semi-Finals →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 5: SF ── -->
+    <div id="bs-sf" style="display:none" class="fade-in">
+      <div class="ko-round-title">SEMI-FINALS</div>
+      <div class="ko-matches-grid" id="koGridSF"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="sfProgress">0 / 2 picked</span>
+        <button class="bracket-btn secondary" onclick="bp_backTo('qf','sf')">← Back</button>
+        <button class="bracket-btn" id="btnToFinal" onclick="bp_toFinal()" disabled>Continue to Final →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 6: FINAL ── -->
+    <div id="bs-final" style="display:none" class="fade-in">
+      <div class="ko-round-title">THE FINAL</div>
+      <div class="ko-matches-grid" id="koGridFinal" style="max-width:320px"></div>
+      <div id="championReveal" style="display:none"></div>
+      <div class="bracket-btn-row" id="finalBtnRow">
+        <button class="bracket-btn secondary" onclick="bp_backTo('sf','final')">← Back</button>
+      </div>
+    </div>
+
+    <!-- ── DOWNLOAD CARD (shown after champion picked) ── -->
+    <div class="download-card" id="downloadCard" style="display:none">
+      <h3>🏆 YOUR PREDICTION IS READY</h3>
+      <p>Download your bracket as an image to share with friends.</p>
+      <div class="bracket-btn-row">
+        <button class="bracket-btn green" onclick="bp_download()">⬇ Download Bracket Image</button>
+        <button class="bracket-btn secondary" onclick="bp_reset()">🔄 Start Over</button>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <!-- TEAM MODAL -->
@@ -2039,6 +2210,431 @@ function showSection(id,btn){
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(btn) btn.classList.add('active');
+  if(id==='myBracket' && !bp_state.rendered) bp_renderGroupPicker();
+}
+
+// ════════════════════════════════════════════════════════════════
+// ██████  R A C K E T   P I C K E R
+// ════════════════════════════════════════════════════════════════
+
+const bp_state = {
+  rendered: false,
+  // groups: { A:[{team,rank:1|2|3|4}, ...], ... }
+  groups: {},
+  r32Picks:   new Array(16).fill(null),
+  r16Picks:   new Array(8).fill(null),
+  qfPicks:    new Array(4).fill(null),
+  sfPicks:    new Array(2).fill(null),
+  finalPick:  null,
+  r32Bracket: [], r16Bracket: [], qfBracket: [], sfBracket: [], finalBracket: []
+};
+
+// Flatten playoff entries into real team objects
+function bp_resolveTeam(t) {
+  if (!t.playoff) return t;
+  // Pick the higher-ELO team as a reasonable default resolved team
+  return { name: t.team1, flag: t.flag1, elo: t.elo, conf: t.conf };
+}
+
+function bp_groupTeams(letter) {
+  return GROUPS[letter].map(bp_resolveTeam);
+}
+
+// ── RENDER GROUP PICKER ──
+function bp_renderGroupPicker() {
+  bp_state.rendered = true;
+  const grid = document.getElementById('pickerGroupsGrid');
+  grid.innerHTML = '';
+
+  for (const [letter, rawTeams] of Object.entries(GROUPS)) {
+    const teams = rawTeams.map(bp_resolveTeam);
+    bp_state.groups[letter] = teams.map(t => ({ ...t, rank: null }));
+
+    const card = document.createElement('div');
+    card.className = 'picker-group-card';
+    card.id = `pgcard-${letter}`;
+    card.innerHTML = `
+      <div class="picker-group-header">
+        <span>GROUP ${letter}</span>
+        <em id="pgstatus-${letter}">0/4 ranked</em>
+      </div>
+      <div id="pgteams-${letter}"></div>`;
+    grid.appendChild(card);
+    bp_renderGroupTeams(letter);
+  }
+  bp_updateGroupProgress();
+}
+
+function bp_renderGroupTeams(letter) {
+  const container = document.getElementById(`pgteams-${letter}`);
+  const state = bp_state.groups[letter];
+  // Sort: ranked first by rank, then unranked by ELO
+  const sorted = [...state].sort((a, b) => {
+    if (a.rank && b.rank) return a.rank - b.rank;
+    if (a.rank) return -1;
+    if (b.rank) return 1;
+    return b.elo - a.elo;
+  });
+
+  const BADGES = { 1:'🥇', 2:'🥈', 3:'🥉', 4:'4️⃣' };
+  const CLASSES = { 1:'r1', 2:'r2', 3:'r3', 4:'r4' };
+
+  container.innerHTML = sorted.map(t => `
+    <div class="picker-team-row" onclick="bp_cycleRank('${letter}','${t.name}')">
+      <div class="picker-rank-badge ${t.rank ? CLASSES[t.rank] : ''}">
+        ${t.rank ? BADGES[t.rank] : '—'}
+      </div>
+      <img class="picker-team-flag" src="${FLAG(t.flag)}" onerror="this.style.opacity='.2'"/>
+      <div class="picker-team-name">${t.name}</div>
+      <div class="picker-team-elo">${t.elo}</div>
+    </div>`).join('');
+}
+
+function bp_cycleRank(letter, teamName) {
+  const state = bp_state.groups[letter];
+  const t = state.find(x => x.name === teamName);
+  if (!t) return;
+
+  const prev = t.rank;
+  const nextRank = prev === null ? 1 : prev === 4 ? null : prev + 1;
+
+  // If trying to assign a rank that's already taken, bump the holder off
+  if (nextRank !== null) {
+    const holder = state.find(x => x.name !== teamName && x.rank === nextRank);
+    if (holder) holder.rank = null;
+  }
+  t.rank = nextRank;
+
+  bp_renderGroupTeams(letter);
+  // Update status label
+  const ranked = state.filter(x => x.rank !== null).length;
+  document.getElementById(`pgstatus-${letter}`).textContent = `${ranked}/4 ranked`;
+  const complete = ranked === 4;
+  document.getElementById(`pgcard-${letter}`).style.borderColor =
+    complete ? 'rgba(0,154,68,.5)' : '';
+
+  bp_updateGroupProgress();
+}
+
+function bp_updateGroupProgress() {
+  const total = Object.keys(bp_state.groups).length; // 12
+  const done = Object.values(bp_state.groups).filter(g => g.filter(t => t.rank !== null).length === 4).length;
+  document.getElementById('groupPickProgress').textContent = `${done} / ${total} groups complete`;
+  document.getElementById('btnToR32').disabled = done < total;
+}
+
+// ── BUILD R32 BRACKET FROM GROUP PICKS ──
+// WC 2026 R32 seeding format: 1A v 2B, 1C v 2D, 1E v 2F, 1G v 2H,
+// 1I v 2J, 1K v 2L, 1B v best-3rd, 1D v 2nd-3rd, 1F v 3rd-3rd,
+// 1H v 4th-3rd, 1J v 5th-3rd, 1L v 6th-3rd, 2A v 7th-3rd,
+// 2C v 8th-3rd, 2E v 2G, 2I v 2K
+function bp_buildR32() {
+  const grps = bp_state.groups;
+  const teamAt = (letter, rank) => grps[letter].find(t => t.rank === rank);
+
+  // Best 8 thirds by ELO
+  const thirds = Object.keys(grps)
+    .map(l => teamAt(l, 3))
+    .filter(Boolean)
+    .sort((a, b) => b.elo - a.elo)
+    .slice(0, 8);
+
+  const L = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  const wins = l => teamAt(l, 1);
+  const runs = l => teamAt(l, 2);
+
+  return [
+    [wins('A'), runs('B')],
+    [wins('C'), runs('D')],
+    [wins('E'), runs('F')],
+    [wins('G'), runs('H')],
+    [wins('I'), runs('J')],
+    [wins('K'), runs('L')],
+    [wins('B'), thirds[0]],
+    [wins('D'), thirds[1]],
+    [wins('F'), thirds[2]],
+    [wins('H'), thirds[3]],
+    [wins('J'), thirds[4]],
+    [wins('L'), thirds[5]],
+    [runs('A'), thirds[6]],
+    [runs('C'), thirds[7]],
+    [runs('E'), runs('G')],
+    [runs('I'), runs('K')],
+  ];
+}
+
+// ── GENERIC KO ROUND RENDERER ──
+function bp_renderKoRound(gridId, bracket, picks, roundLabel, onPick) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = bracket.map(([tA, tB], i) => {
+    const picked = picks[i];
+    const aClass = picked ? (picked.name === tA.name ? 'picked' : 'eliminated') : '';
+    const bClass = picked ? (picked.name === tB.name ? 'picked' : 'eliminated') : '';
+    return `
+      <div class="ko-match-card">
+        <div class="ko-match-label">${roundLabel} · MATCH ${i+1}</div>
+        <button class="ko-team-btn ${aClass}" onclick="${onPick}(${i},'A')">
+          <img class="ko-flag" src="${FLAG(tA.flag)}" onerror="this.style.opacity='.2'"/>
+          <span class="ko-name">${tA.name}</span>
+          <span class="ko-check">${picked && picked.name===tA.name ? '✔' : ''}</span>
+        </button>
+        <div class="ko-vs">VS</div>
+        <button class="ko-team-btn ${bClass}" onclick="${onPick}(${i},'B')">
+          <img class="ko-flag" src="${FLAG(tB.flag)}" onerror="this.style.opacity='.2'"/>
+          <span class="ko-name">${tB.name}</span>
+          <span class="ko-check">${picked && picked.name===tB.name ? '✔' : ''}</span>
+        </button>
+      </div>`;
+  }).join('');
+}
+
+function bp_koProgress(picks, total, progressId, nextBtnId) {
+  const done = picks.filter(Boolean).length;
+  document.getElementById(progressId).textContent = `${done} / ${total} picked`;
+  if (nextBtnId) document.getElementById(nextBtnId).disabled = done < total;
+  return done;
+}
+
+// ── STAGE TRANSITIONS ──
+function bp_toR32() {
+  bp_state.r32Bracket = bp_buildR32();
+  bp_state.r32Picks = new Array(16).fill(null);
+  bp_showStage('r32');
+  bp_renderKoRound('koGridR32', bp_state.r32Bracket, bp_state.r32Picks, 'R32', 'bp_pickR32');
+  bp_koProgress(bp_state.r32Picks, 16, 'r32Progress', 'btnToR16');
+}
+
+function bp_pickR32(i, side) {
+  const [tA, tB] = bp_state.r32Bracket[i];
+  bp_state.r32Picks[i] = side === 'A' ? tA : tB;
+  bp_renderKoRound('koGridR32', bp_state.r32Bracket, bp_state.r32Picks, 'R32', 'bp_pickR32');
+  bp_koProgress(bp_state.r32Picks, 16, 'r32Progress', 'btnToR16');
+}
+
+function bp_toR16() {
+  bp_state.r16Bracket = [];
+  for (let i = 0; i < 16; i += 2)
+    bp_state.r16Bracket.push([bp_state.r32Picks[i], bp_state.r32Picks[i+1]]);
+  bp_state.r16Picks = new Array(8).fill(null);
+  bp_showStage('r16');
+  bp_renderKoRound('koGridR16', bp_state.r16Bracket, bp_state.r16Picks, 'R16', 'bp_pickR16');
+  bp_koProgress(bp_state.r16Picks, 8, 'r16Progress', 'btnToQF');
+}
+
+function bp_pickR16(i, side) {
+  const [tA, tB] = bp_state.r16Bracket[i];
+  bp_state.r16Picks[i] = side === 'A' ? tA : tB;
+  bp_renderKoRound('koGridR16', bp_state.r16Bracket, bp_state.r16Picks, 'R16', 'bp_pickR16');
+  bp_koProgress(bp_state.r16Picks, 8, 'r16Progress', 'btnToQF');
+}
+
+function bp_toQF() {
+  bp_state.qfBracket = [];
+  for (let i = 0; i < 8; i += 2)
+    bp_state.qfBracket.push([bp_state.r16Picks[i], bp_state.r16Picks[i+1]]);
+  bp_state.qfPicks = new Array(4).fill(null);
+  bp_showStage('qf');
+  bp_renderKoRound('koGridQF', bp_state.qfBracket, bp_state.qfPicks, 'QF', 'bp_pickQF');
+  bp_koProgress(bp_state.qfPicks, 4, 'qfProgress', 'btnToSF');
+}
+
+function bp_pickQF(i, side) {
+  const [tA, tB] = bp_state.qfBracket[i];
+  bp_state.qfPicks[i] = side === 'A' ? tA : tB;
+  bp_renderKoRound('koGridQF', bp_state.qfBracket, bp_state.qfPicks, 'QF', 'bp_pickQF');
+  bp_koProgress(bp_state.qfPicks, 4, 'qfProgress', 'btnToSF');
+}
+
+function bp_toSF() {
+  bp_state.sfBracket = [];
+  for (let i = 0; i < 4; i += 2)
+    bp_state.sfBracket.push([bp_state.qfPicks[i], bp_state.qfPicks[i+1]]);
+  bp_state.sfPicks = new Array(2).fill(null);
+  bp_showStage('sf');
+  bp_renderKoRound('koGridSF', bp_state.sfBracket, bp_state.sfPicks, 'SF', 'bp_pickSF');
+  bp_koProgress(bp_state.sfPicks, 2, 'sfProgress', 'btnToFinal');
+}
+
+function bp_pickSF(i, side) {
+  const [tA, tB] = bp_state.sfBracket[i];
+  bp_state.sfPicks[i] = side === 'A' ? tA : tB;
+  bp_renderKoRound('koGridSF', bp_state.sfBracket, bp_state.sfPicks, 'SF', 'bp_pickSF');
+  bp_koProgress(bp_state.sfPicks, 2, 'sfProgress', 'btnToFinal');
+}
+
+function bp_toFinal() {
+  bp_state.finalBracket = [[bp_state.sfPicks[0], bp_state.sfPicks[1]]];
+  bp_state.finalPick = null;
+  bp_showStage('final');
+  bp_renderKoRound('koGridFinal', bp_state.finalBracket, [null], 'FINAL', 'bp_pickFinal');
+  document.getElementById('championReveal').style.display = 'none';
+  document.getElementById('downloadCard').style.display = 'none';
+}
+
+function bp_pickFinal(i, side) {
+  const [tA, tB] = bp_state.finalBracket[0];
+  bp_state.finalPick = side === 'A' ? tA : tB;
+  bp_renderKoRound('koGridFinal', bp_state.finalBracket, [bp_state.finalPick], 'FINAL', 'bp_pickFinal');
+
+  // Reveal champion
+  const c = bp_state.finalPick;
+  const loser = c.name === tA.name ? tB : tA;
+  const reveal = document.getElementById('championReveal');
+  reveal.style.display = 'block';
+  reveal.innerHTML = `
+    <div class="champion-reveal fade-in">
+      <div style="font-size:48px;margin-bottom:8px">🏆</div>
+      <div style="font-size:11px;color:var(--gray);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">YOUR WORLD CUP 2026 CHAMPION</div>
+      <img class="champ-flag-big" src="${FLAG(c.flag)}" alt="${c.name}" onerror="this.style.opacity='.3'"/>
+      <div class="champ-name-big">${c.name}</div>
+      <div class="champ-subtitle">Defeated ${loser.name} in the Final · ELO ${c.elo}</div>
+    </div>`;
+
+  document.getElementById('downloadCard').style.display = 'block';
+  launchConfetti(160);
+  // Update final pill
+  document.getElementById('spill-final').className = 'bstage-pill done';
+}
+
+// ── BACK NAV ──
+function bp_backTo(showStage, hideStage) {
+  bp_showStage(showStage);
+  // Reset the stage being hidden and everything after
+  const order = ['groups','r32','r16','qf','sf','final'];
+  const from = order.indexOf(hideStage);
+  order.slice(from).forEach(s => {
+    if (s === 'r32') { bp_state.r32Picks = new Array(16).fill(null); }
+    if (s === 'r16') { bp_state.r16Picks = new Array(8).fill(null); }
+    if (s === 'qf')  { bp_state.qfPicks = new Array(4).fill(null); }
+    if (s === 'sf')  { bp_state.sfPicks = new Array(2).fill(null); }
+    if (s === 'final') { bp_state.finalPick = null; }
+    const pill = document.getElementById(`spill-${s}`);
+    if (pill && s !== showStage) pill.className = 'bstage-pill';
+  });
+  document.getElementById('downloadCard').style.display = 'none';
+}
+
+function bp_showStage(stage) {
+  ['groups','r32','r16','qf','sf','final'].forEach(s => {
+    const el = document.getElementById(`bs-${s}`);
+    if (el) el.style.display = s === stage ? '' : 'none';
+    const pill = document.getElementById(`spill-${s}`);
+    if (pill) {
+      pill.classList.remove('active');
+      if (s === stage) pill.classList.add('active');
+    }
+  });
+}
+
+// ── DOWNLOAD ──
+function bp_download() {
+  // Build a printable summary string and trigger PNG via canvas
+  const c = bp_state.finalPick;
+  if (!c) return;
+
+  const canvas = document.createElement('canvas');
+  const W = 900, H = 560;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const grad = ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,'#0D0700'); grad.addColorStop(1,'#221503');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+  // Orange header bar
+  ctx.fillStyle = '#F47B20'; ctx.fillRect(0,0,W,8);
+
+  // Title
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 32px Bebas Neue, sans-serif';
+  ctx.letterSpacing = '4px';
+  ctx.textAlign = 'center';
+  ctx.fillText('FIFA WORLD CUP 2026 — MY BRACKET', W/2, 56);
+
+  // Champion label
+  ctx.fillStyle = '#F5C518';
+  ctx.font = 'bold 18px Inter, sans-serif';
+  ctx.fillText('🏆 MY CHAMPION: ' + c.name.toUpperCase(), W/2, 100);
+
+  // Journey
+  const stages = [
+    { label:'R32', picks: bp_state.r32Picks },
+    { label:'R16', picks: bp_state.r16Picks },
+    { label:'QF',  picks: bp_state.qfPicks },
+    { label:'SF',  picks: bp_state.sfPicks },
+    { label:'🏆',  picks: [c] },
+  ];
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#AA8855';
+  ctx.font = '11px Inter, sans-serif';
+  ctx.fillText('Generated at amrit-wc26predictor.vercel.app', 20, H-16);
+
+  let y = 140;
+  for (const {label, picks} of stages) {
+    ctx.fillStyle = '#F47B20';
+    ctx.font = 'bold 13px Bebas Neue, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, 24, y);
+    y += 18;
+
+    const names = picks.filter(Boolean).map(t => t.name);
+    // 4 per row
+    for (let r = 0; r < names.length; r += 4) {
+      const row = names.slice(r, r+4);
+      ctx.fillStyle = '#F0EDE8';
+      ctx.font = '12px Inter, sans-serif';
+      row.forEach((n,i) => {
+        ctx.fillStyle = '#1C1102';
+        ctx.fillRect(24 + i*212, y-13, 200, 20);
+        ctx.strokeStyle = '#3A2208';
+        ctx.strokeRect(24 + i*212, y-13, 200, 20);
+        ctx.fillStyle = '#F0EDE8';
+        ctx.fillText(n, 30 + i*212, y+2);
+      });
+      y += 26;
+    }
+    y += 6;
+    ctx.strokeStyle = '#3A2208';
+    ctx.beginPath(); ctx.moveTo(24, y); ctx.lineTo(W-24, y); ctx.stroke();
+    y += 14;
+    if (y > H-60) break;
+  }
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `WC2026_MyBracket_${c.name.replace(/\s/g,'_')}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+// ── RESET ──
+function bp_reset() {
+  bp_state.rendered = false;
+  bp_state.groups = {};
+  bp_state.r32Picks = new Array(16).fill(null);
+  bp_state.r16Picks = new Array(8).fill(null);
+  bp_state.qfPicks  = new Array(4).fill(null);
+  bp_state.sfPicks  = new Array(2).fill(null);
+  bp_state.finalPick = null;
+  document.getElementById('downloadCard').style.display = 'none';
+  document.getElementById('championReveal').style.display = 'none';
+  bp_showStage('groups');
+  bp_renderGroupPicker();
+  window.scrollTo({top: document.getElementById('myBracket').offsetTop - 80, behavior:'smooth'});
+}
+
+// ── NAV ──
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='myBracket' && !bp_state.rendered) bp_renderGroupPicker();
 }
 
 renderGroups();
