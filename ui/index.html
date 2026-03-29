@@ -2538,79 +2538,177 @@ function bp_showStage(stage) {
 
 // ── DOWNLOAD ──
 function bp_download() {
-  // Build a printable summary string and trigger PNG via canvas
   const c = bp_state.finalPick;
   if (!c) return;
 
+  const W = 1920, H = 1080;
   const canvas = document.createElement('canvas');
-  const W = 900, H = 560;
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // Background
-  const grad = ctx.createLinearGradient(0,0,W,H);
-  grad.addColorStop(0,'#0D0700'); grad.addColorStop(1,'#221503');
-  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+  // ── Background gradient ──
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0D0700'); bg.addColorStop(0.5, '#180E02'); bg.addColorStop(1, '#221503');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-  // Orange header bar
-  ctx.fillStyle = '#F47B20'; ctx.fillRect(0,0,W,8);
+  // ── Diagonal stripes (replicate site hero) ──
+  function skewStripe(x, w, color) {
+    const lean = H * 0.213; // tan(12deg) * H
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x + lean, 0); ctx.lineTo(x + w + lean, 0);
+    ctx.lineTo(x + w, H);   ctx.lineTo(x, H);
+    ctx.closePath(); ctx.fill();
+  }
+  // Left stripes
+  skewStripe(-30, 28, '#009A44'); skewStripe(16, 18, '#0D0700');
+  skewStripe(42, 28, '#0057A8'); skewStripe(88, 18, '#0D0700');
+  skewStripe(114, 28, '#EF3340'); skewStripe(160, 18, '#0D0700');
+  // Right stripes (mirrored)
+  skewStripe(W-160-18, 18, '#0D0700'); skewStripe(W-160, 28, '#EF3340');
+  skewStripe(W-114-18, 18, '#0D0700'); skewStripe(W-114, 28, '#0057A8');
+  skewStripe(W-60-18, 18, '#0D0700');  skewStripe(W-60, 28, '#009A44');
 
-  // Title
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 32px Bebas Neue, sans-serif';
-  ctx.letterSpacing = '4px';
+  // ── Subtle grid texture ──
+  ctx.strokeStyle = 'rgba(244,123,32,0.04)';
+  ctx.lineWidth = 1;
+  for (let gx = 0; gx < W; gx += 60) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+  for (let gy = 0; gy < H; gy += 60) { ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+
+  // ── Top orange bar ──
+  const topBar = ctx.createLinearGradient(0,0,W,0);
+  topBar.addColorStop(0,'#009A44'); topBar.addColorStop(0.33,'#0057A8');
+  topBar.addColorStop(0.66,'#EF3340'); topBar.addColorStop(1,'#F47B20');
+  ctx.fillStyle = topBar; ctx.fillRect(0, 0, W, 7);
+
+  // ── Title ──
   ctx.textAlign = 'center';
-  ctx.fillText('FIFA WORLD CUP 2026 — MY BRACKET', W/2, 56);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '800 72px "Bebas Neue", sans-serif';
+  ctx.fillText('FIFA WORLD CUP 2026', W/2, 88);
+  ctx.fillStyle = '#F47B20';
+  ctx.font = '500 26px Inter, sans-serif';
+  ctx.fillText('MY BRACKET PREDICTION', W/2, 122);
 
-  // Champion label
+  // ── Orange divider ──
+  const div = ctx.createLinearGradient(200,0,W-200,0);
+  div.addColorStop(0,'transparent'); div.addColorStop(0.2,'#F47B20');
+  div.addColorStop(0.8,'#F47B20'); div.addColorStop(1,'transparent');
+  ctx.fillStyle = div; ctx.fillRect(200, 138, W-400, 2);
+
+  // ── Champion hero box ──
+  const bx = W/2 - 340, by = 160, bw = 680, bh = 120;
+  const champBg = ctx.createLinearGradient(bx, by, bx+bw, by+bh);
+  champBg.addColorStop(0,'rgba(245,197,24,0.12)'); champBg.addColorStop(1,'rgba(244,123,32,0.08)');
+  ctx.fillStyle = champBg; ctx.beginPath();
+  ctx.roundRect(bx, by, bw, bh, 14); ctx.fill();
+  ctx.strokeStyle = 'rgba(245,197,24,0.45)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 14); ctx.stroke();
+  ctx.fillStyle = '#AA8855';
+  ctx.font = '600 16px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🏆  MY WORLD CHAMPION', W/2, by + 30);
   ctx.fillStyle = '#F5C518';
-  ctx.font = 'bold 18px Inter, sans-serif';
-  ctx.fillText('🏆 MY CHAMPION: ' + c.name.toUpperCase(), W/2, 100);
+  ctx.font = '800 64px "Bebas Neue", sans-serif';
+  ctx.shadowColor = 'rgba(245,197,24,0.5)'; ctx.shadowBlur = 24;
+  ctx.fillText(c.name.toUpperCase(), W/2, by + 96);
+  ctx.shadowBlur = 0;
 
-  // Journey
-  const stages = [
-    { label:'R32', picks: bp_state.r32Picks },
-    { label:'R16', picks: bp_state.r16Picks },
-    { label:'QF',  picks: bp_state.qfPicks },
-    { label:'SF',  picks: bp_state.sfPicks },
-    { label:'🏆',  picks: [c] },
+  // ── Bracket columns ──
+  // Stages: R32 (16→2 cols of 8), R16 (8), QF (4), SF (2)
+  const rowH  = 54;
+  const tableY = 310;
+  const cols = [
+    { label: 'ROUND OF 32',    picks: bp_state.r32Picks, x: 90,   w: 420, split: true  },
+    { label: 'ROUND OF 16',    picks: bp_state.r16Picks, x: 560,  w: 260, split: false },
+    { label: 'QUARTER-FINALS', picks: bp_state.qfPicks,  x: 876,  w: 260, split: false },
+    { label: 'SEMI-FINALS',    picks: bp_state.sfPicks,  x: 1192, w: 260, split: false },
+    { label: 'THE FINAL',      picks: [c],               x: 1508, w: 320, split: false },
   ];
 
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#AA8855';
-  ctx.font = '11px Inter, sans-serif';
-  ctx.fillText('Generated at amrit-wc26predictor.vercel.app', 20, H-16);
-
-  let y = 140;
-  for (const {label, picks} of stages) {
-    ctx.fillStyle = '#F47B20';
-    ctx.font = 'bold 13px Bebas Neue, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(label, 24, y);
-    y += 18;
-
+  for (const col of cols) {
+    const { label, picks, x, w, split } = col;
     const names = picks.filter(Boolean).map(t => t.name);
-    // 4 per row
-    for (let r = 0; r < names.length; r += 4) {
-      const row = names.slice(r, r+4);
-      ctx.fillStyle = '#F0EDE8';
-      ctx.font = '12px Inter, sans-serif';
-      row.forEach((n,i) => {
-        ctx.fillStyle = '#1C1102';
-        ctx.fillRect(24 + i*212, y-13, 200, 20);
-        ctx.strokeStyle = '#3A2208';
-        ctx.strokeRect(24 + i*212, y-13, 200, 20);
-        ctx.fillStyle = '#F0EDE8';
-        ctx.fillText(n, 30 + i*212, y+2);
-      });
-      y += 26;
-    }
-    y += 6;
-    ctx.strokeStyle = '#3A2208';
-    ctx.beginPath(); ctx.moveTo(24, y); ctx.lineTo(W-24, y); ctx.stroke();
-    y += 14;
-    if (y > H-60) break;
+    const colW = split ? Math.floor((w - 12) / 2) : w;
+
+    // Column header
+    ctx.fillStyle = 'rgba(244,123,32,0.14)';
+    ctx.beginPath(); ctx.roundRect(x, tableY, w, 32, 6); ctx.fill();
+    ctx.strokeStyle = 'rgba(244,123,32,0.3)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(x, tableY, w, 32, 6); ctx.stroke();
+    ctx.fillStyle = '#F47B20';
+    ctx.font = '700 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x + w / 2, tableY + 21);
+
+    // Team rows
+    names.forEach((name, i) => {
+      const isChampCol = !split && picks.length === 1;
+      const cx = split ? x + (i >= 8 ? colW + 12 : 0) : x;
+      const ri = split ? i % 8 : i;
+      const ty = tableY + 44 + ri * rowH;
+      const tw = colW;
+
+      // Row background
+      const isFinal = isChampCol;
+      ctx.fillStyle = isFinal ? 'rgba(245,197,24,0.12)' : (ri % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)');
+      ctx.beginPath(); ctx.roundRect(cx, ty, tw, rowH - 4, 6); ctx.fill();
+      if (isFinal) {
+        ctx.strokeStyle = 'rgba(245,197,24,0.3)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.roundRect(cx, ty, tw, rowH - 4, 6); ctx.stroke();
+      }
+
+      // Rank dot
+      const dotColors = ['#F5C518','#AAAAAA','#CD7F32'];
+      ctx.fillStyle = i < 3 ? dotColors[i] : 'rgba(255,255,255,0.15)';
+      ctx.beginPath(); ctx.arc(cx + 18, ty + (rowH-4)/2, 8, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.font = '700 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(i + 1, cx + 18, ty + (rowH-4)/2 + 4);
+
+      // Name
+      ctx.fillStyle = isFinal ? '#F5C518' : '#F0EDE8';
+      ctx.font = isFinal ? '700 20px Inter, sans-serif' : '600 14px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      const maxW = tw - 40;
+      let nameStr = name;
+      ctx.font = isFinal ? '700 20px Inter, sans-serif' : '600 14px Inter, sans-serif';
+      while (ctx.measureText(nameStr).width > maxW && nameStr.length > 3) nameStr = nameStr.slice(0,-1);
+      if (nameStr !== name) nameStr += '…';
+      ctx.fillText(nameStr, cx + 34, ty + (rowH-4)/2 + 6);
+    });
+
+    // Bottom accent line under column
+    ctx.fillStyle = 'rgba(244,123,32,0.25)';
+    ctx.fillRect(x, tableY + 44 + names.filter((_,i)=>split?i<8:true).length * rowH, split ? colW : w, 2);
   }
+
+  // ── Column connector arrows ──
+  ctx.strokeStyle = 'rgba(244,123,32,0.2)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([6,4]);
+  [[90+420,560],[560+260,876],[876+260,1192],[1192+260,1508]].forEach(([from, to]) => {
+    const midY = tableY + 44 + 4 * rowH;
+    ctx.beginPath(); ctx.moveTo(from+4, midY); ctx.lineTo(to-4, midY); ctx.stroke();
+    // Arrow head
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(244,123,32,0.3)';
+    ctx.beginPath(); ctx.moveTo(to-4,midY-6); ctx.lineTo(to+4,midY); ctx.lineTo(to-4,midY+6); ctx.fill();
+    ctx.setLineDash([6,4]);
+  });
+  ctx.setLineDash([]);
+
+  // ── Bottom bar ──
+  ctx.fillStyle = topBar; ctx.fillRect(0, H-5, W, 5);
+
+  // ── Footer ──
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#5A4430';
+  ctx.font = '400 18px Inter, sans-serif';
+  ctx.fillText('amrit-wc26predictor.vercel.app', 90, H - 20);
+  ctx.textAlign = 'right';
+  ctx.fillText('FIFA World Cup 2026 Prediction', W - 90, H - 20);
 
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
@@ -2619,7 +2717,7 @@ function bp_download() {
     a.download = `WC2026_MyBracket_${c.name.replace(/\s/g,'_')}.png`;
     a.click();
     URL.revokeObjectURL(url);
-  });
+  }, 'image/png');
 }
 
 // ── RESET ──
