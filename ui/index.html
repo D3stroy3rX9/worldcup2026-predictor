@@ -2541,183 +2541,245 @@ function bp_download() {
   const c = bp_state.finalPick;
   if (!c) return;
 
-  const W = 1920, H = 1080;
+  // 9:16 portrait — phone story / wallpaper size
+  const W = 1080, H = 1920;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
+  const PAD = 22;
+  const CW  = W - PAD * 2; // 1036
 
-  // ── Background gradient ──
-  const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, '#0D0700'); bg.addColorStop(0.5, '#180E02'); bg.addColorStop(1, '#221503');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-
-  // ── Diagonal stripes (replicate site hero) ──
-  function skewStripe(x, w, color) {
-    const lean = H * 0.213; // tan(12deg) * H
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(x + lean, 0); ctx.lineTo(x + w + lean, 0);
-    ctx.lineTo(x + w, H);   ctx.lineTo(x, H);
-    ctx.closePath(); ctx.fill();
+  // ── Helpers ──
+  const pseudo = s => Math.abs(Math.sin(s * 9301 + 49297)) % 1;
+  function trunc(text, maxPx) {
+    let t = String(text);
+    while (ctx.measureText(t).width > maxPx && t.length > 2) t = t.slice(0,-1);
+    return t === String(text) ? t : t.slice(0,-1) + '…';
   }
-  // Left stripes
-  skewStripe(-30, 28, '#009A44'); skewStripe(16, 18, '#0D0700');
-  skewStripe(42, 28, '#0057A8'); skewStripe(88, 18, '#0D0700');
-  skewStripe(114, 28, '#EF3340'); skewStripe(160, 18, '#0D0700');
-  // Right stripes (mirrored)
-  skewStripe(W-160-18, 18, '#0D0700'); skewStripe(W-160, 28, '#EF3340');
-  skewStripe(W-114-18, 18, '#0D0700'); skewStripe(W-114, 28, '#0057A8');
-  skewStripe(W-60-18, 18, '#0D0700');  skewStripe(W-60, 28, '#009A44');
-
-  // ── Subtle grid texture ──
-  ctx.strokeStyle = 'rgba(244,123,32,0.04)';
-  ctx.lineWidth = 1;
-  for (let gx = 0; gx < W; gx += 60) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
-  for (let gy = 0; gy < H; gy += 60) { ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
-
-  // ── Top orange bar ──
-  const topBar = ctx.createLinearGradient(0,0,W,0);
-  topBar.addColorStop(0,'#009A44'); topBar.addColorStop(0.33,'#0057A8');
-  topBar.addColorStop(0.66,'#EF3340'); topBar.addColorStop(1,'#F47B20');
-  ctx.fillStyle = topBar; ctx.fillRect(0, 0, W, 7);
-
-  // ── Title ──
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = '800 72px "Bebas Neue", sans-serif';
-  ctx.fillText('FIFA WORLD CUP 2026', W/2, 88);
-  ctx.fillStyle = '#F47B20';
-  ctx.font = '500 26px Inter, sans-serif';
-  ctx.fillText('MY BRACKET PREDICTION', W/2, 122);
-
-  // ── Orange divider ──
-  const div = ctx.createLinearGradient(200,0,W-200,0);
-  div.addColorStop(0,'transparent'); div.addColorStop(0.2,'#F47B20');
-  div.addColorStop(0.8,'#F47B20'); div.addColorStop(1,'transparent');
-  ctx.fillStyle = div; ctx.fillRect(200, 138, W-400, 2);
-
-  // ── Champion hero box ──
-  const bx = W/2 - 340, by = 160, bw = 680, bh = 120;
-  const champBg = ctx.createLinearGradient(bx, by, bx+bw, by+bh);
-  champBg.addColorStop(0,'rgba(245,197,24,0.12)'); champBg.addColorStop(1,'rgba(244,123,32,0.08)');
-  ctx.fillStyle = champBg; ctx.beginPath();
-  ctx.roundRect(bx, by, bw, bh, 14); ctx.fill();
-  ctx.strokeStyle = 'rgba(245,197,24,0.45)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 14); ctx.stroke();
-  ctx.fillStyle = '#AA8855';
-  ctx.font = '600 16px Inter, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('🏆  MY WORLD CHAMPION', W/2, by + 30);
-  ctx.fillStyle = '#F5C518';
-  ctx.font = '800 64px "Bebas Neue", sans-serif';
-  ctx.shadowColor = 'rgba(245,197,24,0.5)'; ctx.shadowBlur = 24;
-  ctx.fillText(c.name.toUpperCase(), W/2, by + 96);
-  ctx.shadowBlur = 0;
-
-  // ── Bracket columns ──
-  // Stages: R32 (16→2 cols of 8), R16 (8), QF (4), SF (2)
-  const rowH  = 54;
-  const tableY = 310;
-  const cols = [
-    { label: 'ROUND OF 32',    picks: bp_state.r32Picks, x: 90,   w: 420, split: true  },
-    { label: 'ROUND OF 16',    picks: bp_state.r16Picks, x: 560,  w: 260, split: false },
-    { label: 'QUARTER-FINALS', picks: bp_state.qfPicks,  x: 876,  w: 260, split: false },
-    { label: 'SEMI-FINALS',    picks: bp_state.sfPicks,  x: 1192, w: 260, split: false },
-    { label: 'THE FINAL',      picks: [c],               x: 1508, w: 320, split: false },
-  ];
-
-  for (const col of cols) {
-    const { label, picks, x, w, split } = col;
-    const names = picks.filter(Boolean).map(t => t.name);
-    const colW = split ? Math.floor((w - 12) / 2) : w;
-
-    // Column header
-    ctx.fillStyle = 'rgba(244,123,32,0.14)';
-    ctx.beginPath(); ctx.roundRect(x, tableY, w, 32, 6); ctx.fill();
-    ctx.strokeStyle = 'rgba(244,123,32,0.3)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.roundRect(x, tableY, w, 32, 6); ctx.stroke();
-    ctx.fillStyle = '#F47B20';
-    ctx.font = '700 13px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(label, x + w / 2, tableY + 21);
-
-    // Team rows
-    names.forEach((name, i) => {
-      const isChampCol = !split && picks.length === 1;
-      const cx = split ? x + (i >= 8 ? colW + 12 : 0) : x;
-      const ri = split ? i % 8 : i;
-      const ty = tableY + 44 + ri * rowH;
-      const tw = colW;
-
-      // Row background
-      const isFinal = isChampCol;
-      ctx.fillStyle = isFinal ? 'rgba(245,197,24,0.12)' : (ri % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)');
-      ctx.beginPath(); ctx.roundRect(cx, ty, tw, rowH - 4, 6); ctx.fill();
-      if (isFinal) {
-        ctx.strokeStyle = 'rgba(245,197,24,0.3)'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.roundRect(cx, ty, tw, rowH - 4, 6); ctx.stroke();
+  function roundRect(x,y,w,h,r,fill,stroke) {
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,r);
+    if (fill)   { ctx.fillStyle=fill;   ctx.fill();   }
+    if (stroke) { ctx.strokeStyle=stroke; ctx.lineWidth=1; ctx.stroke(); }
+  }
+  function sectionBar(label, y) {
+    roundRect(PAD,y,CW,26,4,'rgba(244,123,32,0.15)','rgba(244,123,32,0.4)');
+    ctx.fillStyle='#F47B20'; ctx.font='800 12px Inter,sans-serif'; ctx.textAlign='left';
+    ctx.fillText(label, PAD+12, y+17);
+    return y + 36; // next y
+  }
+  // Draw one match card (shows both teams, highlights winner, dims loser)
+  function matchCard(x,y,w,h,label,tA,tB,winner) {
+    roundRect(x,y,w,h,5,'#1A0F02','#3A2208');
+    // label stripe
+    roundRect(x+1,y+1,w-2,19,0,'rgba(244,123,32,0.14)');
+    ctx.fillStyle='#F47B20'; ctx.font='700 9px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(label, x+w/2, y+13);
+    const rowH = (h-20)/2;
+    [[tA,0],[tB,1]].forEach(([t,ri]) => {
+      const ry = y+20+ri*rowH;
+      const aWon = winner && tA && winner.name===tA.name;
+      const bWon = winner && tB && winner.name===tB.name;
+      const thisWon = ri===0 ? aWon : bWon;
+      const otherWon = ri===0 ? bWon : aWon;
+      if (thisWon) roundRect(x+1,ry,w-2,rowH-1,0,'rgba(244,123,32,0.15)');
+      ctx.fillStyle = thisWon ? '#FFFFFF' : (otherWon ? 'rgba(255,255,255,0.25)' : '#C8C4BE');
+      ctx.font = (thisWon?'700':'400')+' 11px Inter,sans-serif';
+      ctx.textAlign='left';
+      ctx.fillText(trunc(t ? t.name : 'TBD', w-30), x+8, ry+rowH/2+4);
+      if (thisWon) {
+        ctx.fillStyle='#F47B20'; ctx.font='bold 11px Inter,sans-serif';
+        ctx.textAlign='right'; ctx.fillText('✓', x+w-6, ry+rowH/2+4);
       }
-
-      // Rank dot
-      const dotColors = ['#F5C518','#AAAAAA','#CD7F32'];
-      ctx.fillStyle = i < 3 ? dotColors[i] : 'rgba(255,255,255,0.15)';
-      ctx.beginPath(); ctx.arc(cx + 18, ty + (rowH-4)/2, 8, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#000';
-      ctx.font = '700 11px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(i + 1, cx + 18, ty + (rowH-4)/2 + 4);
-
-      // Name
-      ctx.fillStyle = isFinal ? '#F5C518' : '#F0EDE8';
-      ctx.font = isFinal ? '700 20px Inter, sans-serif' : '600 14px Inter, sans-serif';
-      ctx.textAlign = 'left';
-      const maxW = tw - 40;
-      let nameStr = name;
-      ctx.font = isFinal ? '700 20px Inter, sans-serif' : '600 14px Inter, sans-serif';
-      while (ctx.measureText(nameStr).width > maxW && nameStr.length > 3) nameStr = nameStr.slice(0,-1);
-      if (nameStr !== name) nameStr += '…';
-      ctx.fillText(nameStr, cx + 34, ty + (rowH-4)/2 + 6);
+      if (ri===0) { // divider
+        ctx.strokeStyle='rgba(58,34,8,0.8)'; ctx.lineWidth=0.5;
+        ctx.beginPath(); ctx.moveTo(x+4,y+20+rowH); ctx.lineTo(x+w-4,y+20+rowH); ctx.stroke();
+      }
     });
-
-    // Bottom accent line under column
-    ctx.fillStyle = 'rgba(244,123,32,0.25)';
-    ctx.fillRect(x, tableY + 44 + names.filter((_,i)=>split?i<8:true).length * rowH, split ? colW : w, 2);
   }
 
-  // ── Column connector arrows ──
-  ctx.strokeStyle = 'rgba(244,123,32,0.2)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([6,4]);
-  [[90+420,560],[560+260,876],[876+260,1192],[1192+260,1508]].forEach(([from, to]) => {
-    const midY = tableY + 44 + 4 * rowH;
-    ctx.beginPath(); ctx.moveTo(from+4, midY); ctx.lineTo(to-4, midY); ctx.stroke();
-    // Arrow head
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(244,123,32,0.3)';
-    ctx.beginPath(); ctx.moveTo(to-4,midY-6); ctx.lineTo(to+4,midY); ctx.lineTo(to-4,midY+6); ctx.fill();
-    ctx.setLineDash([6,4]);
-  });
-  ctx.setLineDash([]);
+  // ── Background ──
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#0D0700'); bg.addColorStop(0.5,'#180E02'); bg.addColorStop(1,'#221503');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
-  // ── Bottom bar ──
-  ctx.fillStyle = topBar; ctx.fillRect(0, H-5, W, 5);
+  // ── Diagonal edge stripes ──
+  function skewStripe(x,w,color,alpha) {
+    const lean = H*0.213;
+    ctx.globalAlpha=alpha; ctx.fillStyle=color;
+    ctx.beginPath();
+    ctx.moveTo(x+lean,0); ctx.lineTo(x+w+lean,0);
+    ctx.lineTo(x+w,H);    ctx.lineTo(x,H);
+    ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
+  }
+  skewStripe(-10,26,'#009A44',0.7); skewStripe(24,14,'#0D0700',1);
+  skewStripe(46,26,'#0057A8',0.7); skewStripe(80,14,'#0D0700',1);
+  skewStripe(102,26,'#EF3340',0.7);
+  skewStripe(W-102-26,26,'#EF3340',0.7); skewStripe(W-80-14,14,'#0D0700',1);
+  skewStripe(W-46-26,26,'#0057A8',0.7); skewStripe(W-24-14,14,'#0D0700',1);
+  skewStripe(W-10,26,'#009A44',0.7);
+
+  // ── Rainbow bars (top + bottom) ──
+  const rainbow = ctx.createLinearGradient(0,0,W,0);
+  rainbow.addColorStop(0,'#009A44'); rainbow.addColorStop(0.33,'#0057A8');
+  rainbow.addColorStop(0.66,'#EF3340'); rainbow.addColorStop(1,'#F47B20');
+  ctx.fillStyle=rainbow; ctx.fillRect(0,0,W,7);
+  ctx.fillStyle=rainbow; ctx.fillRect(0,H-7,W,7);
+
+  // ── Header ──
+  ctx.textAlign='center';
+  ctx.fillStyle='#FFFFFF'; ctx.font='800 58px "Bebas Neue",sans-serif';
+  ctx.fillText('FIFA WORLD CUP 2026', W/2, 76);
+  ctx.fillStyle='#F47B20'; ctx.font='500 20px Inter,sans-serif';
+  ctx.fillText('MY BRACKET PREDICTION', W/2, 104);
+  const divG = ctx.createLinearGradient(PAD,0,W-PAD,0);
+  divG.addColorStop(0,'transparent'); divG.addColorStop(0.15,'#F47B20');
+  divG.addColorStop(0.85,'#F47B20'); divG.addColorStop(1,'transparent');
+  ctx.fillStyle=divG; ctx.fillRect(PAD,116,CW,2);
+
+  let cy = 126;
+
+  // ══ SECTION 1: GROUP STAGE ══
+  cy = sectionBar('GROUP STAGE — FINAL STANDINGS', cy);
+  const GCOLS=4, GGAP=7, GCH=116;
+  const GCW = (CW-(GCOLS-1)*GGAP)/GCOLS; // ~253px
+  Object.keys(bp_state.groups).forEach((letter,idx) => {
+    const col=idx%GCOLS, row=Math.floor(idx/GCOLS);
+    const gx=PAD+col*(GCW+GGAP), gy=cy+row*(GCH+GGAP);
+    const teams=bp_state.groups[letter];
+    roundRect(gx,gy,GCW,GCH,5,'#1A0F02','#3A2208');
+    // header
+    roundRect(gx+1,gy+1,GCW-2,20,0,'rgba(244,123,32,0.18)');
+    ctx.fillStyle='#F47B20'; ctx.font='700 10px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(`GROUP ${letter}`, gx+GCW/2, gy+14);
+    // team rows
+    const BCLR=['#F5C518','#AAAAAA','#CD7F32','rgba(255,255,255,0.18)'];
+    const BTXT=['1','2','3','4'];
+    teams.forEach((t,ti) => {
+      const ty2=gy+22+ti*23;
+      // qualifier tint for top 2
+      if (ti<2) roundRect(gx+1,ty2,GCW-2,22,0,'rgba(0,154,68,0.06)');
+      // rank circle
+      ctx.fillStyle=BCLR[ti];
+      ctx.beginPath(); ctx.arc(gx+12,ty2+11,8,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=ti<3?'#000':'#666'; ctx.font='700 9px Inter,sans-serif';
+      ctx.textAlign='center'; ctx.fillText(BTXT[ti],gx+12,ty2+14);
+      // name
+      ctx.fillStyle=ti<2?'#F0EDE8':'rgba(240,237,232,0.38)';
+      ctx.font=(ti<2?'600':'400')+' 11px Inter,sans-serif';
+      ctx.textAlign='left';
+      ctx.fillText(trunc(t.name,GCW-30),gx+24,ty2+14);
+    });
+  });
+  cy += Math.ceil(Object.keys(bp_state.groups).length/GCOLS)*(GCH+GGAP) + 14;
+
+  // ══ SECTION 2: ROUND OF 32 ══
+  cy = sectionBar('ROUND OF 32', cy);
+  const MCOLS=4, MGAP=7, MCH=76;
+  const MCW=(CW-(MCOLS-1)*MGAP)/MCOLS; // ~253px
+  bp_state.r32Bracket.forEach(([tA,tB],i) => {
+    const col=i%MCOLS, row=Math.floor(i/MCOLS);
+    matchCard(PAD+col*(MCW+MGAP), cy+row*(MCH+MGAP), MCW, MCH, `R32·M${i+1}`, tA, tB, bp_state.r32Picks[i]);
+  });
+  cy += Math.ceil(bp_state.r32Bracket.length/MCOLS)*(MCH+MGAP) + 14;
+
+  // ══ SECTION 3: ROUND OF 16 ══
+  cy = sectionBar('ROUND OF 16', cy);
+  bp_state.r16Bracket.forEach(([tA,tB],i) => {
+    const col=i%MCOLS, row=Math.floor(i/MCOLS);
+    matchCard(PAD+col*(MCW+MGAP), cy+row*(MCH+MGAP), MCW, MCH, `R16·M${i+1}`, tA, tB, bp_state.r16Picks[i]);
+  });
+  cy += Math.ceil(bp_state.r16Bracket.length/MCOLS)*(MCH+MGAP) + 14;
+
+  // ══ SECTION 4: QF + SF side by side ══
+  const halfW=(CW-14)/2; // ~511px each
+  const QCW=(halfW-MGAP)/2; // 2 cols in QF half ~252px
+  // QF label
+  roundRect(PAD,cy,halfW,26,4,'rgba(244,123,32,0.15)','rgba(244,123,32,0.4)');
+  ctx.fillStyle='#F47B20'; ctx.font='800 12px Inter,sans-serif'; ctx.textAlign='left';
+  ctx.fillText('QUARTER-FINALS',PAD+10,cy+17);
+  // SF label
+  roundRect(PAD+halfW+14,cy,halfW,26,4,'rgba(244,123,32,0.15)','rgba(244,123,32,0.4)');
+  ctx.fillText('SEMI-FINALS',PAD+halfW+14+10,cy+17);
+  cy += 34;
+
+  const QSFH=82;
+  // QF: 4 matches, 2×2 grid in left half
+  bp_state.qfBracket.forEach(([tA,tB],i) => {
+    const col=i%2, row=Math.floor(i/2);
+    matchCard(PAD+col*(QCW+MGAP), cy+row*(QSFH+MGAP), QCW, QSFH, `QF·M${i+1}`, tA, tB, bp_state.qfPicks[i]);
+  });
+  // SF: 2 matches, stacked in right half (full half-width cards)
+  bp_state.sfBracket.forEach(([tA,tB],i) => {
+    matchCard(PAD+halfW+14, cy+i*(QSFH+MGAP), halfW, QSFH, `SF·M${i+1}`, tA, tB, bp_state.sfPicks[i]);
+  });
+  cy += 2*(QSFH+MGAP) + 14;
+
+  // ══ SECTION 5: THE FINAL ══
+  cy = sectionBar('THE FINAL', cy);
+  const [fA,fB]=bp_state.finalBracket[0]||[{name:'TBD'},{name:'TBD'}];
+  matchCard(PAD,cy,CW,92,'WORLD CUP FINAL',fA,fB,c);
+  cy += 92 + 20;
+
+  // ══ CHAMPION BANNER ══
+  const bannerH = H - cy - 60;
+  // confetti scatter (deterministic)
+  const confClr=['#F5C518','#F47B20','#009A44','#0057A8','#EF3340','#FFFFFF'];
+  for (let d=0;d<80;d++) {
+    const cx2=PAD+(pseudo(d)*CW);
+    const cy2=cy+(pseudo(d*3)*bannerH);
+    const r=2+pseudo(d*7)*6;
+    ctx.globalAlpha=0.55; ctx.fillStyle=confClr[d%confClr.length];
+    if (d%3===0) { // rect confetti piece
+      ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(pseudo(d*11)*Math.PI*2);
+      ctx.fillRect(-r/2,-r*1.8,r,r*3.5); ctx.restore();
+    } else { ctx.beginPath(); ctx.arc(cx2,cy2,r,0,Math.PI*2); ctx.fill(); }
+    ctx.globalAlpha=1;
+  }
+  // streaks / ribbons
+  for (let s=0;s<16;s++) {
+    ctx.save(); ctx.globalAlpha=0.3; ctx.fillStyle=confClr[s%confClr.length];
+    const sx=PAD+(pseudo(s*41)*CW), sy2=cy+(pseudo(s*17)*bannerH);
+    ctx.translate(sx,sy2); ctx.rotate((pseudo(s*5)-0.5)*Math.PI);
+    ctx.fillRect(-18,-2,36,4); ctx.restore(); ctx.globalAlpha=1;
+  }
+  // champion box
+  const cbx=PAD+30, cby=cy+18, cbw=CW-60, cbh=bannerH-30;
+  const cbBg=ctx.createLinearGradient(cbx,cby,cbx+cbw,cby+cbh);
+  cbBg.addColorStop(0,'rgba(245,197,24,0.18)'); cbBg.addColorStop(1,'rgba(244,123,32,0.10)');
+  roundRect(cbx,cby,cbw,cbh,14,cbBg,'#F5C518');
+  // inner glow
+  ctx.shadowColor='rgba(245,197,24,0.4)'; ctx.shadowBlur=30;
+  ctx.strokeStyle='rgba(245,197,24,0.25)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(cbx+6,cby+6,cbw-12,cbh-12,10); ctx.stroke();
+  ctx.shadowBlur=0;
+  // label
+  ctx.textAlign='center';
+  ctx.fillStyle='rgba(170,136,85,0.9)'; ctx.font='600 14px Inter,sans-serif';
+  ctx.fillText('FIFA WORLD CUP 2026  ·  MY CHAMPION', W/2, cby+36);
+  // name
+  ctx.fillStyle='#F5C518';
+  ctx.shadowColor='rgba(245,197,24,0.7)'; ctx.shadowBlur=28;
+  const champFontSize = cbh > 100 ? 72 : 52;
+  ctx.font=`800 ${champFontSize}px "Bebas Neue",sans-serif`;
+  ctx.fillText(c.name.toUpperCase(), W/2, cby+cbh/2+champFontSize*0.35);
+  ctx.shadowBlur=0;
+  // trophy emoji row
+  ctx.font=`${Math.min(36, cbh*0.2)}px Inter,sans-serif`;
+  ctx.fillText('🏆  🌟  🏆', W/2, cby+cbh-22);
 
   // ── Footer ──
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#5A4430';
-  ctx.font = '400 18px Inter, sans-serif';
-  ctx.fillText('amrit-wc26predictor.vercel.app', 90, H - 20);
-  ctx.textAlign = 'right';
-  ctx.fillText('FIFA World Cup 2026 Prediction', W - 90, H - 20);
+  ctx.textAlign='center'; ctx.fillStyle='#4A3820';
+  ctx.font='400 16px Inter,sans-serif';
+  ctx.fillText('amrit-wc26predictor.vercel.app', W/2, H-18);
 
   canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `WC2026_MyBracket_${c.name.replace(/\s/g,'_')}.png`;
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`WC2026_MyBracket_${c.name.replace(/\s+/g,'_')}.png`;
     a.click();
     URL.revokeObjectURL(url);
-  }, 'image/png');
+  },'image/png');
 }
 
 // ── RESET ──
