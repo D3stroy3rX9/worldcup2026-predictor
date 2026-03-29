@@ -2653,6 +2653,15 @@ function bp_download() {
   const hStartX = (W - hGroupW) / 2;
 
   if (logoEl && logoEl.complete) {
+    // Subtle orange radial glow behind the logo so it reads on dark bg
+    const logoCX = hStartX + logoSize / 2;
+    const logoCY = 14 + logoSize / 2;
+    const logoGlow = ctx.createRadialGradient(logoCX, logoCY, 0, logoCX, logoCY, logoSize * 0.72);
+    logoGlow.addColorStop(0,  'rgba(244,123,32,0.28)');
+    logoGlow.addColorStop(0.5,'rgba(244,123,32,0.10)');
+    logoGlow.addColorStop(1,  'rgba(244,123,32,0)');
+    ctx.fillStyle = logoGlow;
+    ctx.beginPath(); ctx.arc(logoCX, logoCY, logoSize * 0.72, 0, Math.PI * 2); ctx.fill();
     ctx.drawImage(logoEl, hStartX, 14, logoSize, logoSize);
   }
   ctx.fillStyle='#FFFFFF';
