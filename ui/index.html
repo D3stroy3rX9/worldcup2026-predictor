@@ -2611,12 +2611,27 @@ function bp_download() {
     ctx.lineTo(x+w,H);    ctx.lineTo(x,H);
     ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
   }
-  skewStripe(-10,26,'#009A44',0.7); skewStripe(24,14,'#0D0700',1);
-  skewStripe(46,26,'#0057A8',0.7); skewStripe(80,14,'#0D0700',1);
-  skewStripe(102,26,'#EF3340',0.7);
-  skewStripe(W-102-26,26,'#EF3340',0.7); skewStripe(W-80-14,14,'#0D0700',1);
-  skewStripe(W-46-26,26,'#0057A8',0.7); skewStripe(W-24-14,14,'#0D0700',1);
-  skewStripe(W-10,26,'#009A44',0.7);
+  // Clip stripes to edge bands so they don't cut through content
+  ctx.save(); ctx.beginPath(); ctx.rect(0,0,170,H); ctx.clip();
+  skewStripe(-10,26,'#009A44',0.8); skewStripe(24,14,'#0D0700',1);
+  skewStripe(46,26,'#0057A8',0.8); skewStripe(80,14,'#0D0700',1);
+  skewStripe(102,26,'#EF3340',0.8);
+  ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(W-170,0,170,H); ctx.clip();
+  skewStripe(W-102-26,26,'#EF3340',0.8); skewStripe(W-80-14,14,'#0D0700',1);
+  skewStripe(W-46-26,26,'#0057A8',0.8); skewStripe(W-24-14,14,'#0D0700',1);
+  skewStripe(W-10,26,'#009A44',0.8);
+  ctx.restore();
+
+  // ── Frost glass overlay — tones down stripes, unifies content area ──
+  ctx.fillStyle='rgba(8,4,0,0.80)'; ctx.fillRect(0,0,W,H);
+  // Warm grain texture for depth
+  ctx.globalAlpha=0.014;
+  for (let g=0;g<4000;g++) {
+    ctx.fillStyle=`rgb(${200+pseudo(g*3)*55|0},${150+pseudo(g*11)*45|0},${70+pseudo(g*17)*30|0})`;
+    ctx.fillRect(pseudo(g*7)*W|0, pseudo(g*13)*H|0, 1, 1);
+  }
+  ctx.globalAlpha=1;
 
   // ── Rainbow bars (top + bottom) ──
   const rainbow = ctx.createLinearGradient(0,0,W,0);
@@ -2625,10 +2640,17 @@ function bp_download() {
   ctx.fillStyle=rainbow; ctx.fillRect(0,0,W,7);
   ctx.fillStyle=rainbow; ctx.fillRect(0,H-7,W,7);
 
-  // ── Header ──
+  // ── Header frost panel ──
+  const hGrad=ctx.createLinearGradient(0,7,0,122);
+  hGrad.addColorStop(0,'rgba(244,123,32,0.12)'); hGrad.addColorStop(1,'rgba(8,4,0,0)');
+  ctx.fillStyle=hGrad; ctx.fillRect(0,7,W,115);
+
+  // ── Header text ──
   ctx.textAlign='center';
   ctx.fillStyle='#FFFFFF'; ctx.font='800 58px "Bebas Neue",sans-serif';
+  ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=12;
   ctx.fillText('FIFA WORLD CUP 2026', W/2, 76);
+  ctx.shadowBlur=0;
   ctx.fillStyle='#F47B20'; ctx.font='500 20px Inter,sans-serif';
   ctx.fillText('MY BRACKET PREDICTION', W/2, 104);
   const divG = ctx.createLinearGradient(PAD,0,W-PAD,0);
@@ -2699,6 +2721,7 @@ function bp_download() {
   ctx.fillText('QUARTER-FINALS',PAD+10,cy+17);
   // SF label
   roundRect(PAD+halfW+14,cy,halfW,26,4,'rgba(244,123,32,0.15)','rgba(244,123,32,0.4)');
+  ctx.fillStyle='#F47B20'; ctx.font='800 12px Inter,sans-serif'; ctx.textAlign='left';
   ctx.fillText('SEMI-FINALS',PAD+halfW+14+10,cy+17);
   cy += 34;
 
@@ -2722,49 +2745,52 @@ function bp_download() {
 
   // ══ CHAMPION BANNER ══
   const bannerH = H - cy - 60;
-  // confetti scatter (deterministic)
+  const cbx=PAD+30, cby=cy+18, cbw=CW-60, cbh=bannerH-30;
   const confClr=['#F5C518','#F47B20','#009A44','#0057A8','#EF3340','#FFFFFF'];
-  for (let d=0;d<80;d++) {
-    const cx2=PAD+(pseudo(d)*CW);
-    const cy2=cy+(pseudo(d*3)*bannerH);
-    const r=2+pseudo(d*7)*6;
-    ctx.globalAlpha=0.55; ctx.fillStyle=confClr[d%confClr.length];
-    if (d%3===0) { // rect confetti piece
-      ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(pseudo(d*11)*Math.PI*2);
-      ctx.fillRect(-r/2,-r*1.8,r,r*3.5); ctx.restore();
-    } else { ctx.beginPath(); ctx.arc(cx2,cy2,r,0,Math.PI*2); ctx.fill(); }
+
+  // 1. Draw box background first
+  const cbBg=ctx.createLinearGradient(cbx,cby,cbx+cbw,cby+cbh);
+  cbBg.addColorStop(0,'rgba(245,197,24,0.20)'); cbBg.addColorStop(1,'rgba(244,123,32,0.12)');
+  roundRect(cbx,cby,cbw,cbh,14,cbBg,'rgba(245,197,24,0.6)');
+
+  // 2. Confetti INSIDE box (clipped to box bounds) — evenly distributed
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(cbx+2,cby+2,cbw-4,cbh-4,12); ctx.clip();
+  for (let d=0;d<110;d++) {
+    // Use distinct seed multipliers to get good x/y spread
+    const cx2=cbx+(pseudo(d*13+5)*cbw);
+    const cy2=cby+(pseudo(d*17+3)*cbh);
+    const r=2+pseudo(d*7)*5;
+    ctx.globalAlpha=0.5+pseudo(d*31)*0.3;
+    ctx.fillStyle=confClr[d%confClr.length];
+    const shape=d%4;
+    ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(pseudo(d*11)*Math.PI*2);
+    if (shape===0)      { ctx.fillRect(-r/2,-r*2,r,r*4); }          // tall strip
+    else if (shape===1) { ctx.fillRect(-r*2,-r/2,r*4,r); }          // wide strip
+    else if (shape===2) { ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); } // dot
+    else                { ctx.fillRect(-r,-r,r*2,r*2); }            // square
+    ctx.restore();
     ctx.globalAlpha=1;
   }
-  // streaks / ribbons
-  for (let s=0;s<16;s++) {
-    ctx.save(); ctx.globalAlpha=0.3; ctx.fillStyle=confClr[s%confClr.length];
-    const sx=PAD+(pseudo(s*41)*CW), sy2=cy+(pseudo(s*17)*bannerH);
-    ctx.translate(sx,sy2); ctx.rotate((pseudo(s*5)-0.5)*Math.PI);
-    ctx.fillRect(-18,-2,36,4); ctx.restore(); ctx.globalAlpha=1;
-  }
-  // champion box
-  const cbx=PAD+30, cby=cy+18, cbw=CW-60, cbh=bannerH-30;
-  const cbBg=ctx.createLinearGradient(cbx,cby,cbx+cbw,cby+cbh);
-  cbBg.addColorStop(0,'rgba(245,197,24,0.18)'); cbBg.addColorStop(1,'rgba(244,123,32,0.10)');
-  roundRect(cbx,cby,cbw,cbh,14,cbBg,'#F5C518');
-  // inner glow
-  ctx.shadowColor='rgba(245,197,24,0.4)'; ctx.shadowBlur=30;
-  ctx.strokeStyle='rgba(245,197,24,0.25)'; ctx.lineWidth=1;
+  ctx.restore(); // remove clip
+
+  // 3. Inner glow ring on top of confetti
+  ctx.shadowColor='rgba(245,197,24,0.45)'; ctx.shadowBlur=28;
+  ctx.strokeStyle='rgba(245,197,24,0.3)'; ctx.lineWidth=1.5;
   ctx.beginPath(); ctx.roundRect(cbx+6,cby+6,cbw-12,cbh-12,10); ctx.stroke();
   ctx.shadowBlur=0;
-  // label
+
+  // 4. Text on top of everything
   ctx.textAlign='center';
-  ctx.fillStyle='rgba(170,136,85,0.9)'; ctx.font='600 14px Inter,sans-serif';
+  ctx.fillStyle='rgba(200,165,95,0.95)'; ctx.font='600 14px Inter,sans-serif';
   ctx.fillText('FIFA WORLD CUP 2026  ·  MY CHAMPION', W/2, cby+36);
-  // name
   ctx.fillStyle='#F5C518';
-  ctx.shadowColor='rgba(245,197,24,0.7)'; ctx.shadowBlur=28;
-  const champFontSize = cbh > 100 ? 72 : 52;
+  ctx.shadowColor='rgba(245,197,24,0.8)'; ctx.shadowBlur=32;
+  const champFontSize=cbh>120?72:52;
   ctx.font=`800 ${champFontSize}px "Bebas Neue",sans-serif`;
   ctx.fillText(c.name.toUpperCase(), W/2, cby+cbh/2+champFontSize*0.35);
   ctx.shadowBlur=0;
-  // trophy emoji row
-  ctx.font=`${Math.min(36, cbh*0.2)}px Inter,sans-serif`;
+  ctx.font=`${Math.min(34,cbh*0.18)}px Inter,sans-serif`;
   ctx.fillText('🏆  🌟  🏆', W/2, cby+cbh-22);
 
   // ── Footer ──
