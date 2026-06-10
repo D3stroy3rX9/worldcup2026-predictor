@@ -2602,14 +2602,17 @@ async function bp_download() {
     img.crossOrigin = 'anonymous';
     img.onload  = () => { flagImgs[code] = img; res(); };
     img.onerror = () => res();
-    img.src = `https://flagcdn.com/w160/${code}.png`;
+    img.src = `https://flagcdn.com/w320/${code}.png`;
   })));
 
-  // 9:16 portrait — phone story / wallpaper size
-  const W = 1080, H = 1920;
+  // 9:16 portrait — phone story / wallpaper size, rendered at 2× for 4K (2160×3840)
+  const W = 1080, H = 1920, SCALE = 2;
   const canvas = document.createElement('canvas');
-  canvas.width = W; canvas.height = H;
+  canvas.width = W * SCALE; canvas.height = H * SCALE;
   const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   const PAD = 22;
   const CW  = W - PAD * 2; // 1036
 
