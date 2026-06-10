@@ -1099,6 +1099,21 @@
   .picker-team-flag { width:30px; height:21px; object-fit:cover; border-radius:3px; box-shadow:0 1px 4px rgba(0,0,0,.5); flex-shrink:0; }
   .picker-team-name { flex:1; font-size:13px; font-weight:600; }
   .picker-team-elo { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--orange); }
+  .thirds-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:8px; }
+  @media (max-width:900px){ .thirds-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:600px){ .thirds-grid{ grid-template-columns:repeat(2,1fr); } }
+  .third-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; transition:all .18s; user-select:none; position:relative; }
+  .third-card:hover { transform:translateY(-2px); border-color:rgba(244,123,32,.4); }
+  .third-card.selected { border-color:var(--green); background:rgba(0,154,68,.10); box-shadow:0 4px 18px rgba(0,154,68,.18); }
+  .third-card.eliminated { opacity:.42; border-color:rgba(239,51,64,.35); }
+  .third-card.eliminated:hover { opacity:.75; }
+  .third-group { font-size:9px; font-weight:700; letter-spacing:2px; color:var(--orange); }
+  .third-flag { width:48px; height:32px; object-fit:cover; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+  .third-name { font-size:13px; font-weight:700; text-align:center; }
+  .third-elo { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--orange); }
+  .third-status { font-size:9px; font-weight:700; letter-spacing:1.5px; padding:3px 8px; border-radius:10px; }
+  .third-card.selected .third-status { background:rgba(0,154,68,.22); color:var(--green); }
+  .third-card.eliminated .third-status { background:rgba(239,51,64,.18); color:var(--red); }
   .rank-hint { font-size:10px; color:var(--gray); text-align:center; margin:10px 0 20px; letter-spacing:.5px; }
   nav button.bracket-nav-btn { border-color:rgba(244,123,32,.22); color:var(--gray); font-weight:800; }
   nav button.bracket-nav-btn:hover, nav button.bracket-nav-btn.active { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); border-color:var(--orange); color:var(--black); box-shadow:0 0 20px rgba(244,123,32,0.5); }
@@ -1387,11 +1402,12 @@
     <!-- Stage progress pills -->
     <div class="bstage-nav" id="bstageNav">
       <div class="bstage-pill active" id="spill-groups">① Groups</div>
-      <div class="bstage-pill" id="spill-r32">② Round of 32</div>
-      <div class="bstage-pill" id="spill-r16">③ Round of 16</div>
-      <div class="bstage-pill" id="spill-qf">④ Quarter-Finals</div>
-      <div class="bstage-pill" id="spill-sf">⑤ Semi-Finals</div>
-      <div class="bstage-pill" id="spill-final">⑥ Final</div>
+      <div class="bstage-pill" id="spill-thirds">② Best 3rds</div>
+      <div class="bstage-pill" id="spill-r32">③ Round of 32</div>
+      <div class="bstage-pill" id="spill-r16">④ Round of 16</div>
+      <div class="bstage-pill" id="spill-qf">⑤ Quarter-Finals</div>
+      <div class="bstage-pill" id="spill-sf">⑥ Semi-Finals</div>
+      <div class="bstage-pill" id="spill-final">⑦ Final</div>
     </div>
 
     <!-- ── STAGE 1: GROUP PICKER ── -->
@@ -1400,7 +1416,18 @@
       <div class="picker-groups-grid" id="pickerGroupsGrid"></div>
       <div class="bracket-btn-row">
         <span class="bracket-progress" id="groupPickProgress">0 / 12 groups complete</span>
-        <button class="bracket-btn" id="btnToR32" onclick="bp_toR32()" disabled>Continue to Round of 32 →</button>
+        <button class="bracket-btn" id="btnToR32" onclick="bp_toThirds()" disabled>Continue to Best 3rds →</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 1.5: BEST 3rd-PLACE PICKER ── -->
+    <div id="bs-thirds" style="display:none" class="fade-in">
+      <p class="rank-hint">12 third-placed teams competed for 8 knockout spots. Click teams to toggle — pick the 8 you think advance, leaving 4 eliminated.</p>
+      <div class="thirds-grid" id="thirdsGrid"></div>
+      <div class="bracket-btn-row">
+        <span class="bracket-progress" id="thirdsProgress">0 / 8 selected</span>
+        <button class="bracket-btn secondary" onclick="bp_backTo('groups','thirds')">← Back</button>
+        <button class="bracket-btn" id="btnThirdsToR32" onclick="bp_toR32()" disabled>Continue to R32 →</button>
       </div>
     </div>
 
@@ -2271,6 +2298,7 @@ const bp_state = {
   rendered: false,
   // groups: { A:[{team,rank:1|2|3|4}, ...], ... }
   groups: {},
+  thirdsPicks: [], // user-selected 8 of 12 best 3rd-place teams
   r32Picks:   new Array(16).fill(null),
   r16Picks:   new Array(8).fill(null),
   qfPicks:    new Array(4).fill(null),
@@ -2390,34 +2418,34 @@ function bp_buildR32() {
   const grps = bp_state.groups;
   const teamAt = (letter, rank) => grps[letter].find(t => t.rank === rank);
 
-  // Best 8 thirds by ELO
-  const thirds = Object.keys(grps)
-    .map(l => teamAt(l, 3))
-    .filter(Boolean)
-    .sort((a, b) => b.elo - a.elo)
-    .slice(0, 8);
+  // Use the user's 8 selected thirds, ordered by ELO so seeding is consistent
+  const thirds = [...bp_state.thirdsPicks].sort((a, b) => b.elo - a.elo);
 
   const L = ['A','B','C','D','E','F','G','H','I','J','K','L'];
   const wins = l => teamAt(l, 1);
   const runs = l => teamAt(l, 2);
 
+  // Canonical FIFA WC 2026 R32 pairings (matches 73-88):
+  // 8 group winners (1A,1B,1D,1E,1G,1I,1K,1L) vs the 8 best 3rd-placed teams
+  // 4 winners (1C,1F,1H,1J) vs runners-up (2F,2C,2J,2H)
+  // 4 runner-up vs runner-up pairs (2A-2B, 2E-2I, 2K-2L, 2D-2G)
   return [
-    [wins('A'), runs('B')],
-    [wins('C'), runs('D')],
-    [wins('E'), runs('F')],
-    [wins('G'), runs('H')],
-    [wins('I'), runs('J')],
-    [wins('K'), runs('L')],
-    [wins('B'), thirds[0]],
-    [wins('D'), thirds[1]],
-    [wins('F'), thirds[2]],
-    [wins('H'), thirds[3]],
-    [wins('J'), thirds[4]],
-    [wins('L'), thirds[5]],
-    [runs('A'), thirds[6]],
-    [runs('C'), thirds[7]],
-    [runs('E'), runs('G')],
-    [runs('I'), runs('K')],
+    [runs('A'), runs('B')],   // M73
+    [wins('E'), thirds[0]],   // M74
+    [wins('F'), runs('C')],   // M75
+    [wins('C'), runs('F')],   // M76
+    [wins('I'), thirds[1]],   // M77
+    [runs('E'), runs('I')],   // M78
+    [wins('A'), thirds[2]],   // M79
+    [wins('L'), thirds[3]],   // M80
+    [wins('D'), thirds[4]],   // M81
+    [wins('G'), thirds[5]],   // M82
+    [runs('K'), runs('L')],   // M83
+    [wins('H'), runs('J')],   // M84
+    [wins('B'), thirds[6]],   // M85
+    [wins('J'), runs('H')],   // M86
+    [wins('K'), thirds[7]],   // M87
+    [runs('D'), runs('G')],   // M88
   ];
 }
 
@@ -2454,7 +2482,58 @@ function bp_koProgress(picks, total, progressId, nextBtnId) {
 }
 
 // ── STAGE TRANSITIONS ──
+// ── BEST 3rd-PLACE PICKER ──
+function bp_allThirds() {
+  return Object.keys(bp_state.groups)
+    .map(l => ({ team: bp_state.groups[l].find(t => t.rank === 3), group: l }))
+    .filter(x => x.team);
+}
+
+function bp_toThirds() {
+  // Default selection: top 8 by ELO
+  if (bp_state.thirdsPicks.length !== 8) {
+    bp_state.thirdsPicks = bp_allThirds()
+      .map(x => x.team)
+      .sort((a,b) => b.elo - a.elo)
+      .slice(0,8);
+  }
+  bp_renderThirdsPicker();
+  bp_showStage('thirds');
+}
+
+function bp_renderThirdsPicker() {
+  const all = bp_allThirds();
+  const grid = document.getElementById('thirdsGrid');
+  const selected = new Set(bp_state.thirdsPicks.map(t => t.name));
+  grid.innerHTML = all.map(({team, group}) => {
+    const isSel = selected.has(team.name);
+    return `
+      <div class="third-card ${isSel ? 'selected' : 'eliminated'}" onclick="bp_toggleThird('${team.name.replace(/'/g,"\\'")}')">
+        <div class="third-group">GROUP ${group}</div>
+        <img class="third-flag" src="${FLAG(team.flag)}" onerror="this.style.opacity='.2'"/>
+        <div class="third-name">${team.name}</div>
+        <div class="third-elo">ELO ${team.elo}</div>
+        <div class="third-status">${isSel ? '✓ ADVANCES' : '✗ ELIMINATED'}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('thirdsProgress').textContent = `${bp_state.thirdsPicks.length} / 8 selected`;
+  document.getElementById('btnThirdsToR32').disabled = bp_state.thirdsPicks.length !== 8;
+  document.getElementById('spill-thirds').className = bp_state.thirdsPicks.length === 8 ? 'bstage-pill done' : 'bstage-pill active';
+}
+
+function bp_toggleThird(name) {
+  const idx = bp_state.thirdsPicks.findIndex(t => t.name === name);
+  if (idx >= 0) {
+    bp_state.thirdsPicks.splice(idx, 1);
+  } else if (bp_state.thirdsPicks.length < 8) {
+    const team = bp_allThirds().find(x => x.team.name === name)?.team;
+    if (team) bp_state.thirdsPicks.push(team);
+  }
+  bp_renderThirdsPicker();
+}
+
 function bp_toR32() {
+  if (bp_state.thirdsPicks.length !== 8) { bp_toThirds(); return; }
   bp_state.r32Bracket = bp_buildR32();
   bp_state.r32Picks = new Array(16).fill(null);
   bp_showStage('r32');
@@ -2558,9 +2637,10 @@ function bp_pickFinal(i, side) {
 function bp_backTo(showStage, hideStage) {
   bp_showStage(showStage);
   // Reset the stage being hidden and everything after
-  const order = ['groups','r32','r16','qf','sf','final'];
+  const order = ['groups','thirds','r32','r16','qf','sf','final'];
   const from = order.indexOf(hideStage);
   order.slice(from).forEach(s => {
+    if (s === 'thirds') { bp_state.thirdsPicks = []; }
     if (s === 'r32') { bp_state.r32Picks = new Array(16).fill(null); }
     if (s === 'r16') { bp_state.r16Picks = new Array(8).fill(null); }
     if (s === 'qf')  { bp_state.qfPicks = new Array(4).fill(null); }
@@ -2573,7 +2653,7 @@ function bp_backTo(showStage, hideStage) {
 }
 
 function bp_showStage(stage) {
-  ['groups','r32','r16','qf','sf','final'].forEach(s => {
+  ['groups','thirds','r32','r16','qf','sf','final'].forEach(s => {
     const el = document.getElementById(`bs-${s}`);
     if (el) el.style.display = s === stage ? '' : 'none';
     const pill = document.getElementById(`spill-${s}`);
@@ -2605,8 +2685,8 @@ async function bp_download() {
     img.src = `https://flagcdn.com/w320/${code}.png`;
   })));
 
-  // 9:16 portrait — phone story / wallpaper size, rendered at 2× for 4K (2160×3840)
-  const W = 1080, H = 1920, SCALE = 2;
+  // Tall portrait — rendered at 2× for crisp 4K output (2160×4200)
+  const W = 1080, H = 2100, SCALE = 2;
   const canvas = document.createElement('canvas');
   canvas.width = W * SCALE; canvas.height = H * SCALE;
   const ctx = canvas.getContext('2d');
@@ -2790,6 +2870,48 @@ async function bp_download() {
     });
   });
   cy += Math.ceil(Object.keys(bp_state.groups).length/GCOLS)*(GCH+GGAP) + 14;
+
+  // ══ SECTION 1.5: BEST 3rd-PLACE TEAMS ══
+  cy = sectionBar('BEST 3rd-PLACE — 8 ADVANCE · 4 ELIMINATED', cy);
+  const TCOLS = 4, TGAP = 7, TCH = 28;
+  const TCW = (CW - (TCOLS-1)*TGAP) / TCOLS;
+  const selectedThirds = new Set((bp_state.thirdsPicks||[]).map(t => t.name));
+  const allThirdsList = Object.keys(bp_state.groups)
+    .map(l => ({ team: bp_state.groups[l].find(t => t.rank === 3), group: l }))
+    .filter(x => x.team);
+  allThirdsList.forEach(({team, group}, i) => {
+    const col = i % TCOLS, row = Math.floor(i / TCOLS);
+    const tx = PAD + col*(TCW+TGAP), ty = cy + row*(TCH+TGAP);
+    const advances = selectedThirds.has(team.name);
+    const cardBg = advances ? 'rgba(0,154,68,0.10)' : '#150A01';
+    const cardBd = advances ? 'rgba(0,154,68,0.45)' : 'rgba(239,51,64,0.25)';
+    roundRect(tx, ty, TCW, TCH, 4, cardBg, cardBd);
+    // group letter
+    ctx.fillStyle='#F47B20'; ctx.font='700 8px Inter,sans-serif'; ctx.textAlign='left';
+    ctx.fillText(group, tx+6, ty+11);
+    // flag
+    let nameX = tx + 20;
+    if (team.flag && flagImgs[team.flag]) {
+      const fH = 14, fW = fH*1.5;
+      ctx.save();
+      ctx.beginPath(); ctx.roundRect(tx+20, ty+TCH/2-fH/2, fW, fH, 1.5); ctx.clip();
+      ctx.drawImage(flagImgs[team.flag], tx+20, ty+TCH/2-fH/2, fW, fH);
+      ctx.restore();
+      if (!advances) { ctx.fillStyle='rgba(8,4,0,0.55)'; ctx.fillRect(tx+20, ty+TCH/2-fH/2, fW, fH); }
+      nameX = tx + 20 + fW + 6;
+    }
+    // team name
+    ctx.fillStyle = advances ? '#FFFFFF' : 'rgba(255,255,255,0.40)';
+    ctx.font = (advances?'700':'500') + ' 10px Inter,sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText(trunc(team.name, tx+TCW-nameX-22), nameX, ty+TCH/2+3);
+    // status pill on right
+    const pillW = 18;
+    ctx.fillStyle = advances ? 'rgba(0,154,68,0.85)' : 'rgba(239,51,64,0.65)';
+    ctx.font='800 9px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(advances ? '✓' : '✗', tx+TCW-pillW/2-4, ty+TCH/2+3);
+  });
+  cy += Math.ceil(allThirdsList.length/TCOLS)*(TCH+TGAP) + 14;
 
   // ══ SECTION 2: KNOCKOUT BRACKET TREE ══
   cy = sectionBar('KNOCKOUT STAGE', cy);
@@ -3025,6 +3147,9 @@ async function bp_download() {
 function bp_reset() {
   bp_state.rendered = false;
   bp_state.groups = {};
+  bp_state.thirdsPicks = [];
+  document.querySelectorAll('.bstage-pill').forEach(p => p.className = 'bstage-pill');
+  document.getElementById('spill-groups').className = 'bstage-pill active';
   bp_state.r32Picks = new Array(16).fill(null);
   bp_state.r16Picks = new Array(8).fill(null);
   bp_state.qfPicks  = new Array(4).fill(null);
